@@ -1,131 +1,7 @@
 import checkHelper from "./helpers/checkHelper";
+import dissectionHelper from "./helpers/dissectionHelper";
 
 import dictionary from "../constants/shapeDictionary";
-
-
-function mapCallouts(callouts) {
-    var res = {
-        status: "OK",
-        shapes: [],
-    };
-    var position;
-
-    var objectDictionary = JSON.parse(JSON.stringify(dictionary));
-
-    if (callouts.length !== 3) {
-        res.status = "KO";
-        res.message = "Not enough callouts";
-
-        return res;
-    }
-
-    for (let index in callouts) {
-        if (objectDictionary.hasOwnProperty(callouts[index].toLowerCase())) {
-            var shape = Object.assign({}, objectDictionary[callouts[index]]);
-
-            //position = parseInt(index) === 0 ? 'left' : (parseInt(index) === 1 ? 'mid' : 'right');
-            shape.position = index;
-            res.shapes.push(shape);
-        } else {
-            res.status = "KO";
-            res.message = "callout: '" + callouts[index] + "' not found";
-
-            return res;
-        }
-    }
-
-    res.message = mapCallouts.name + " successful";
-
-    return res;
-}
-
-function updateArrayForFinalShapes(shapes, finalShapes) {
-    var updatedArray = [];
-
-    for (let index = 0; index < shapes.length; index++) {
-		var currentShape = shapes[index]
-		var currentShapePosition = currentShape.position;
-        var currentShapeArray = currentShape.twoDimensionalShapes;
-        var finalShape = finalShapes.filter(function(shape) {
-			return shape.position === currentShapePosition;
-		  })[0];
-		var finalShapeArray = finalShape.twoDimensionalShapes;
-        var checkCurrent = checkHelper.check(
-            currentShapeArray,
-            finalShapeArray
-        );
-
-        var shape = Object.assign({}, shapes[index]);
-
-        if (checkCurrent.hasSomeShapes) {
-            shape.hasForFinalShape = checkCurrent.foundMatches;
-        }
-
-        shape.needsForFinalShape = checkCurrent.neededShapes;
-
-        updatedArray.push(shape);
-    }
-
-    return updatedArray;
-}
-
-function getComplementaryShapes(shapesArray) {
-    var res = {
-        status: "OK",
-        shapes: [],
-    };
-
-    if (shapesArray.length !== 3) {
-        (res.status = "KO"),
-            (res.message = "Impossible amount of shapes. Check input");
-
-        return res;
-    }
-
-    for (let index in shapesArray) {
-        switch (shapesArray[index]) {
-            case "C":
-                res.shapes.push("prism");
-                break;
-            case "T":
-                res.shapes.push("cilinder");
-                break;
-            case "S":
-                res.shapes.push("cone");
-                break;
-            default:
-                res.status = "KO";
-                res.message = shapesArray[index] + "is not a valid 2D shape.";
-                break;
-        }
-    }
-
-    res.message = res.message
-        ? res.message
-        : getComplementaryShapes.name + " succesful.";
-
-    return res;
-}
-
-function printShapes(shapeObjects) {
-    for (let index in shapeObjects) {
-        var shapeObject = shapeObjects[index];
-        console.log(
-            parseInt(index) +
-                1 +
-                "° shape on " +
-                shapeObject.position +
-                ": " +
-                shapeObject.threeDimensionalShape
-        );
-        console.log(
-            "made of: " +
-                shapeObject.twoDimensionalShapes[0] +
-                " | " +
-                shapeObject.twoDimensionalShapes[1]
-        );
-    }
-}
 
 function dissectionStep(startingShapes, finalShapes) {
     console.log("starting dissection step");
@@ -145,7 +21,7 @@ function dissectionStep(startingShapes, finalShapes) {
 		isFinalShape = checkHelper.isFinalShape(res);
 		i++;
     } while(!isFinalShape && i < 5)
-	printShapes(res);
+	dissectionHelper.printShapes(res);
 	console.log(i);
 }
 
@@ -160,52 +36,9 @@ function dissection(startingShapes, finalShapes) {
     var currentShapeArray;
     var finalShapeArray;
     var isFinalShape;
-    var symbolToGive;
 
     // for each shape checks which symbols are to be given away and if there are final shapes ready
-    for (let index = 0; index < startingShapes.length; index++) {
-        currentShape = startingShapes[index];
-        finalShape = finalShapes[index];
-        currentShapeArray = currentShape.twoDimensionalShapes;
-        finalShapeArray = finalShape.twoDimensionalShapes;
-
-        isFinalShape = checkHelper.finalCheck(
-            currentShapeArray,
-            finalShapeArray
-        );
-
-        // if (isFinalShape) {
-        //     continue;
-        // }
-
-        if (
-            currentShape.hasForFinalShape &&
-            currentShapeArray[0] === currentShape.hasForFinalShape[0]
-        ) {
-            symbolToGive = {
-                symbol: currentShapeArray[1],
-                index: 1,
-            };
-        } else {
-            symbolToGive = {
-                symbol: currentShapeArray[0],
-                index: 0,
-            };
-        }
-
-        var shape = Object.assign({}, currentShape);
-
-        shape.symbolToGive = symbolToGive;
-
-        console.log(
-            "Shape: '" +
-                currentShape.threeDimensionalShape +
-                "' needs to give " +
-                symbolToGive.symbol
-        );
-
-        dissectingShapes.push(shape);
-    }
+    dissectingShapes = dissectionHelper.initializeDissection(startingShapes, finalShapes);
 
     if (dissectingShapes.length === 0) {
         // BENE! TUTTE LE FORME SONO ULTIME E IL RPOGRAMMA FINISCE.
@@ -218,12 +51,15 @@ function dissection(startingShapes, finalShapes) {
 
     // ATTENTO QUI A CORREGGERE DOPO
     // SCOVA IL PROBLEMA: L'AGGIORNAMENTO DELLA DISSECTING IN DISSECTED
+    // VIENE SOVRASCRITTO IN DISSECTING IL VALORE DEGLI OGGETTI
+    // RISCRIVI IN FUNZIONE ESTERNA DISSECTIONHELPER
     while (i < dissectingShapes.length && !oob) {
-        dissectingShapes = i === 0 ? dissectingShapes : dissectedShapes;
+        dissectingShapes = dissectedShapes ? dissectedShapes : dissectingShapes;
 
         currentShape = dissectingShapes[i];
+        finalShape = finalShapes[i];
         currentShapeArray = currentShape && currentShape.twoDimensionalShapes;
-        finalShapeArray = finalShapes[i] && finalShapes[i].twoDimensionalShapes;
+        finalShapeArray = finalShape && finalShape.twoDimensionalShapes;
 
         // check if final shape | deploy error if there are no arrays
         isFinalShape = checkHelper.finalCheck(
@@ -330,15 +166,14 @@ function updateDissection(newShapes, oldShapes, finalShapes) {
         var newShape = {};
         var shapeCheck;
         newShape.position = newShapes[index].position;
-        newShape.threeDimensionalShape = mapThreeDimensionalShape(
-            newShapes[index].twoDimensionalShapes
+        newShape.threeDimensionalShape = dissectionHelper.mapThreeDimensionalShape(
+            newShapes[index].twoDimensionalShapes,
+            dictionary
         );
         newShape.twoDimensionalShapes = newShapes[index].twoDimensionalShapes;
 
         combinedShapes.push(newShape);
     }
-
-    combinedShapes = updateArrayForFinalShapes(combinedShapes, finalShapes);
 
     // Aggiungi gli elementi di oldShapes che non sono stati modificati
     for (let i = 0; i < oldShapes.length; i++) {
@@ -350,6 +185,8 @@ function updateDissection(newShapes, oldShapes, finalShapes) {
     // Ordina di nuovo il nuovo array in base alla posizione per garantire l'ordine corretto
     combinedShapes.sort((a, b) => a.position - b.position);
 
+    combinedShapes = dissectionHelper.updateArrayForFinalShapes(combinedShapes, finalShapes);
+
     // Stampa gli elementi del nuovo array combinato
     for (let i in combinedShapes) {
         console.log(combinedShapes[i]);
@@ -358,68 +195,35 @@ function updateDissection(newShapes, oldShapes, finalShapes) {
     return combinedShapes;
 }
 
-function mapThreeDimensionalShape(shapeCombination) {
-    const objectDictionary = JSON.parse(JSON.stringify(dictionary));
-
-    for (let key in objectDictionary) {
-        if (
-            arraysHaveSameElements(
-                objectDictionary[key].twoDimensionalShapes,
-                shapeCombination
-            )
-        ) {
-            var res = objectDictionary[key].threeDimensionalShape;
-            return res;
-        }
-    }
-}
-
-function arraysHaveSameElements(arr1, arr2) {
-    if (arr1.length !== arr2.length) {
-        return false;
-    }
-
-    const countMap = new Map();
-
-    for (const item of arr1) {
-        countMap.set(item, (countMap.get(item) || 0) + 1);
-    }
-
-    for (const item of arr2) {
-        if (!countMap.has(item)) {
-            return false;
-        }
-        countMap.set(item, countMap.get(item) - 1);
-        if (countMap.get(item) === 0) {
-            countMap.delete(item);
-        }
-    }
-
-    return countMap.size === 0;
-}
-
 // CODE STARTS HERE
 // c'è un problema con le 2Dshapes al termine del primo ciclo. non vengono impostate correttamente
 
 function main() {
     var insideCallouts = ["C", "T", "S"];
     var outsideCallouts = ["sphere", "prism", "prism"];
+    var objectDictionary = JSON.parse(JSON.stringify(dictionary));
 
-    var startingShapes = mapCallouts(outsideCallouts);
-    var complementaryShapes = getComplementaryShapes(insideCallouts);
+    console.log(objectDictionary.sphere)
+
+
+    var startingShapes = dissectionHelper.mapCallouts(outsideCallouts, objectDictionary);
+    var complementaryShapes = dissectionHelper.getComplementaryShapes(insideCallouts);
 
     console.log("------START");
 
     if (startingShapes.status !== "OK" || startingShapes.status !== "OK") {
         console.log("MESSAGGIO DI ERRORE");
     } else {
-        complementaryShapes = mapCallouts(complementaryShapes.shapes);
+        complementaryShapes = dissectionHelper.mapCallouts(complementaryShapes.shapes, objectDictionary);
 
-        startingShapes.shapes = updateArrayForFinalShapes(
+        startingShapes.shapes = dissectionHelper.updateArrayForFinalShapes(
             startingShapes.shapes,
-            complementaryShapes.shapes
+            complementaryShapes.shapes,
+            startingShapes.shapTests,
+            complementaryShapes.shapTests
         );
 
+        //console.log(startingShapes);
         dissectionStep(startingShapes.shapes, complementaryShapes.shapes);
     }
 }
