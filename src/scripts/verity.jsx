@@ -1,33 +1,37 @@
 import checkHelper from "./helpers/checkHelper";
 import dissectionHelper from "./helpers/dissectionHelper";
+import Shape from "../models/Shape";
 
 import dictionary from "../constants/shapeDictionary";
 
-function dissectionStep(startingShapes, finalShapes) {
+function dissection(startingShapes, finalShapes) {
     console.log("starting dissection step");
-    // while dissecting != final
-    console.log(
-        "starting 3D shape: " + startingShapes[0].threeDimensionalShape
-    );
-    //console.log('finalShape: ' + finalShapes[0].threeDimensionalShape);
-    console.log(
-        "starting 2D shapes: " + startingShapes[0].twoDimensionalShapes
-    );
-    var res = dissection(startingShapes, finalShapes);
+
     var isFinalShape = false;
-    var i = 0;
+    var i = 0; // SECURITY INDEX FOR AVOIDING INFINITE LOOPS
+    var res;
+    var shapes;
+    var steps = [];
+
     do {
-	    res = dissection(res, finalShapes);
-		isFinalShape = checkHelper.isFinalShape(res);
+        shapes = res ? res.shapes : startingShapes;
+	    res = dissectionStep(shapes, finalShapes);
+		isFinalShape = checkHelper.isFinalShape(res.shapes);
+        steps.push(res.step);
 		i++;
     } while(!isFinalShape && i < 5)
-	dissectionHelper.printShapes(res);
-	console.log(i);
+
+	dissectionHelper.printSteps(steps, i);
 }
 
-function dissection(startingShapes, finalShapes) {
+function dissectionStep(startingShapes, finalShapes) {
     console.log("---INITIALIZE---");
     console.log(startingShapes);
+
+    var res = {
+        status: 'OK'
+    }
+
     // STEP 0 - INITIALIZE dissectingShapes array
     var dissectingShapes = [];
 
@@ -40,191 +44,173 @@ function dissection(startingShapes, finalShapes) {
     // for each shape checks which symbols are to be given away and if there are final shapes ready
     dissectingShapes = dissectionHelper.initializeDissection(startingShapes, finalShapes);
 
-    if (dissectingShapes.length === 0) {
-        // BENE! TUTTE LE FORME SONO ULTIME E IL RPOGRAMMA FINISCE.
-        return startingShapes;
-    }
-
     // STEP 1 - DISSECTION of the previously calculated element.
+    // TODO: prettify the oob bs + too nested 1finalShape -> escape
     var i = 0;
     var oob = false;
 
-    // ATTENTO QUI A CORREGGERE DOPO
-    // SCOVA IL PROBLEMA: L'AGGIORNAMENTO DELLA DISSECTING IN DISSECTED
-    // VIENE SOVRASCRITTO IN DISSECTING IL VALORE DEGLI OGGETTI
-    // RISCRIVI IN FUNZIONE ESTERNA DISSECTIONHELPER
+    // for each shape attempt to perform a dissection, skip final shapes
     while (i < dissectingShapes.length && !oob) {
+        // starting vs ongoing
         dissectingShapes = dissectedShapes ? dissectedShapes : dissectingShapes;
 
         currentShape = dissectingShapes[i];
         finalShape = finalShapes[i];
-        currentShapeArray = currentShape && currentShape.twoDimensionalShapes;
-        finalShapeArray = finalShape && finalShape.twoDimensionalShapes;
+        currentShapeArray = currentShape && currentShape.getTwoDimensionalShapes();
+        finalShapeArray = finalShape && finalShape.getTwoDimensionalShapes();
 
-        // check if final shape | deploy error if there are no arrays
+        // check if final shape | skip iteration if true
         isFinalShape = checkHelper.finalCheck(
             currentShapeArray,
             finalShapeArray
         );
-        console.log(
-            currentShape.threeDimensionalShape +
-                " in position " +
-                currentShape.position +
-                " isFinalShape: " +
-                isFinalShape
-        );
 
-        var poppedIndex = !isFinalShape && currentShape.symbolToGive.index;
-        var currentlyPopped = !isFinalShape && currentShapeArray[poppedIndex];
-
-        if (!isFinalShape) {
-            currentShapeArray.splice(poppedIndex, 1);
-        }
+        var symbolToGive = currentShape.getSymbolToGive();
+        var poppedIndex = symbolToGive && symbolToGive.index;
+        var currentlyPopped = currentShapeArray[poppedIndex] || false;
 
         var j = 0;
 	    var dissectedShapes = [];
 	    var otherShape;
+        var otherSymbol;
         var otherShapeArray;
 
-        while (j < dissectingShapes.length && !isFinalShape) {
+        if (isFinalShape) {
+            oob = dissectedShapes.length !== dissectingShapes.length;
+            i++;
+            continue;
+        }
+
+        // Cycle through all other shapes and dissect
+        while (j < dissectingShapes.length) {
 			otherShape = dissectingShapes[j];
-            if (otherShape !== currentShape) {
-                console.log(
-                    currentShape.threeDimensionalShape +
-                        " " +
-                        currentShape.position +
-                        " is giving: " +
-                        currentlyPopped
-                );
-                if (
-                    otherShape.needsForFinalShape.includes(currentlyPopped) &&
-                    otherShape.symbolToGive &&
-					dissectedShapes.length === 0
-                ) {
-                    console.log(
-                        "candidate: " +
-                            otherShape.threeDimensionalShape +
-                            " " +
-                            otherShape.position
-                    );
-                    otherShapeArray = otherShape.twoDimensionalShapes;
+            otherSymbol = otherShape.getSymbolToGive();
 
-                    otherShapeArray.push(currentlyPopped);
-                    currentShapeArray.push(otherShape.symbolToGive.symbol);
-
-                    otherShapeArray.splice(otherShape.symbolToGive.index, 1);
-
-                    dissectedShapes.push(otherShape);
-                }
+            if (otherShape === currentShape) {
+                j++;
+                continue;
             }
+
+            if (
+                !otherShape.getNeeds().includes(currentlyPopped) ||
+                !otherSymbol ||
+                dissectedShapes.length > 0
+            ) {
+                j++;
+                continue;
+            }
+
+            otherShapeArray = otherShape.getTwoDimensionalShapes();
+
+            otherShapeArray.push(currentlyPopped);
+            currentShapeArray.push(otherSymbol.symbol);
+
+            otherShapeArray.splice(otherSymbol.index, 1);
+            currentShapeArray.splice(poppedIndex, 1);
+
+            currentShape.setTwoDimensionalShapes(currentShapeArray);
+            otherShape.setTwoDimensionalShapes(otherShapeArray);
+
+            dissectedShapes.push(otherShape);
+
             j++;
         }
         dissectedShapes.push(currentShape);
 
-        if (!isFinalShape) {
-            //console.log('Dissect ' + currentlyPopped + ' from ' + currentShape.position);
-            //console.log('Dissect ' + otherShape.symbolToGive.symbol + ' from ' + otherShape.position);
+        dissectedShapes = updateDissection(
+            dissectedShapes,
+            dissectingShapes,
+            finalShapes
+        );
 
-            // updateShapes and print step
-            dissectedShapes = updateDissection(
-                dissectedShapes,
-                dissectingShapes,
-                finalShapes
-            );
-            console.log("---DISSECTED---");
-            console.log(dissectedShapes);
-            //dissectedShapes = dissection(dissectedShapes, finalShapes)
-        }
+        res.step = {
+            firstDissection: dissectionHelper.writeStep(currentShape, 'shape'),
+            secondDissection: dissectionHelper.writeStep(otherShape, 'shape'),
+            currentShapes: dissectedShapes
+        };
 
-		// CHECK OOB
-		oob = dissectedShapes.length !== dissectingShapes.length;
+        console.log("---DISSECTED---");
+        console.log(dissectedShapes);
+
+		// CHECK OOB - currently disabled. the one above should be enough
+		//oob = dissectedShapes.length !== dissectingShapes.length;
 
         i++;
     }
 
-    return dissectingShapes;
+    res.shapes = dissectingShapes
+
+    return res;
 }
 
 function updateDissection(newShapes, oldShapes, finalShapes) {
-    // Ordina newShapes in ordine crescente basandoti su newShapes[i].position
     newShapes.sort((a, b) => a.position - b.position);
 
     var combinedShapes = [];
 
-    console.log("-- oldShapes --");
-    console.log(oldShapes);
-    console.log("-- oldShapes --");
-
-    console.log("-- newShapes --");
-    console.log(newShapes);
-    console.log("-- newShapes --");
-
-    // Crea una mappa delle posizioni modificate
+    // map modified positions to keep track of which shapes have been used
     let modifiedPositions = new Set(newShapes.map((shape) => shape.position));
 
     for (let index in newShapes) {
-        var newShape = {};
-        var shapeCheck;
-        newShape.position = newShapes[index].position;
-        newShape.threeDimensionalShape = dissectionHelper.mapThreeDimensionalShape(
-            newShapes[index].twoDimensionalShapes,
+        var newShapeObject = {};
+        var newShape;
+        var finalShapeCheck;
+
+        // Prepare newShapeObject for newShape Model
+        newShapeObject.position = newShapes[index].position;
+        newShapeObject.twoDimensionalShapes = newShapes[index].twoDimensionalShapes;
+        newShapeObject.threeDimensionalShape = dissectionHelper.mapThreeDimensionalShape(
+            newShapeObject.twoDimensionalShapes,
             dictionary
         );
-        newShape.twoDimensionalShapes = newShapes[index].twoDimensionalShapes;
+
+        finalShapeCheck = checkHelper.finalCheck(
+            newShapeObject.twoDimensionalShapes,
+            finalShapes[index].getTwoDimensionalShapes()
+        )
+        
+        newShape = new Shape(newShapeObject, finalShapeCheck);
 
         combinedShapes.push(newShape);
     }
 
-    // Aggiungi gli elementi di oldShapes che non sono stati modificati
+    // Add back oldShapes to the array
     for (let i = 0; i < oldShapes.length; i++) {
         if (!modifiedPositions.has(oldShapes[i].position)) {
             combinedShapes.push(oldShapes[i]);
         }
     }
 
-    // Ordina di nuovo il nuovo array in base alla posizione per garantire l'ordine corretto
     combinedShapes.sort((a, b) => a.position - b.position);
 
     combinedShapes = dissectionHelper.updateArrayForFinalShapes(combinedShapes, finalShapes);
-
-    // Stampa gli elementi del nuovo array combinato
-    for (let i in combinedShapes) {
-        console.log(combinedShapes[i]);
-    }
 
     return combinedShapes;
 }
 
 // CODE STARTS HERE
-// c'è un problema con le 2Dshapes al termine del primo ciclo. non vengono impostate correttamente
 
 function main() {
     var insideCallouts = ["C", "T", "S"];
-    var outsideCallouts = ["sphere", "prism", "prism"];
+    var outsideCallouts = ["cube", "sphere", "pyramid"];
     var objectDictionary = JSON.parse(JSON.stringify(dictionary));
 
-    console.log(objectDictionary.sphere)
-
-
+    var finalShapes = dissectionHelper.getFinalShapes(insideCallouts, objectDictionary);
     var startingShapes = dissectionHelper.mapCallouts(outsideCallouts, objectDictionary);
-    var complementaryShapes = dissectionHelper.getComplementaryShapes(insideCallouts);
 
     console.log("------START");
 
-    if (startingShapes.status !== "OK" || startingShapes.status !== "OK") {
+    if (startingShapes.status !== "OK" || finalShapes.status !== "OK") {
         console.log("MESSAGGIO DI ERRORE");
     } else {
-        complementaryShapes = dissectionHelper.mapCallouts(complementaryShapes.shapes, objectDictionary);
 
         startingShapes.shapes = dissectionHelper.updateArrayForFinalShapes(
             startingShapes.shapes,
-            complementaryShapes.shapes,
-            startingShapes.shapTests,
-            complementaryShapes.shapTests
+            finalShapes.shapes
         );
 
-        //console.log(startingShapes);
-        dissectionStep(startingShapes.shapes, complementaryShapes.shapes);
+        console.log(startingShapes);
+        dissection(startingShapes.shapes, finalShapes.shapes);
     }
 }
 

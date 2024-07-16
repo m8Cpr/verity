@@ -1,16 +1,14 @@
 import checkHelper from "./checkHelper";
+import Shape from "../../models/Shape";
 
 import dictionary from "../../constants/shapeDictionary";
 
-import Shape from "../../models/Shape";
-
-function mapCallouts(callouts, objectDictionary) {
+function mapCallouts(callouts, objectDictionary, areFinalShapes) {
     var res = {
         status: "OK",
         shapes: [],
-        shapTests: []
     };
-    var position;
+    var isFinalShape = areFinalShapes || false;
 
     if (callouts.length !== 3) {
         res.status = "KO";
@@ -22,13 +20,11 @@ function mapCallouts(callouts, objectDictionary) {
     for (let index in callouts) {
         if (objectDictionary.hasOwnProperty(callouts[index].toLowerCase())) {
             var shapeObject = Object.assign({}, objectDictionary[callouts[index]]);
-
-            var shapTest = new Shape(shapeObject);
-            shapTest.setPosition(index);
-
             shapeObject.position = index;
-            res.shapes.push(shapeObject);
-            res.shapTests.push(shapTest);
+
+            var shape = new Shape(shapeObject, isFinalShape);
+
+            res.shapes.push(shape);
         } else {
             res.status = "KO";
             res.message = "callout: '" + callouts[index] + "' not found";
@@ -59,31 +55,31 @@ function mapThreeDimensionalShape(shapeCombination) {
     }
 }
 
-function printShapes(shapeObjects) {
-    for (let index in shapeObjects) {
-        var shapeObject = shapeObjects[index];
-        console.log(
-            parseInt(index) +
-                1 +
-                "° shape on " +
-                shapeObject.position +
-                ": " +
-                shapeObject.threeDimensionalShape
-        );
-        console.log(
-            "made of: " +
-                shapeObject.twoDimensionalShapes[0] +
-                " | " +
-                shapeObject.twoDimensionalShapes[1]
-        );
+function printSteps(stepObjectArray, iterations) {
+    var shapes;
+
+    console.log('Solved in ' + iterations + ' iterations');
+    
+    for (let index in stepObjectArray) {
+        shapes = [];
+        console.log(stepObjectArray[index].firstDissection);
+        console.log(stepObjectArray[index].secondDissection);
+
+        stepObjectArray[index].currentShapes.forEach(shape => {
+            shapes.push(shape.getThreeDimensionalShape());
+        })
+
+        console.log('currentShapes: ' + shapes);
     }
 }
 
-function getComplementaryShapes(shapesArray) {
+function getFinalShapes(shapesArray, dictionary) {
     var res = {
         status: "OK",
         shapes: [],
     };
+
+    var mapResponse = [];
 
     if (shapesArray.length !== 3) {
         (res.status = "KO"),
@@ -95,13 +91,13 @@ function getComplementaryShapes(shapesArray) {
     for (let index in shapesArray) {
         switch (shapesArray[index]) {
             case "C":
-                res.shapes.push("prism");
+                mapResponse.push("prism");
                 break;
             case "T":
-                res.shapes.push("cilinder");
+                mapResponse.push("cilinder");
                 break;
             case "S":
-                res.shapes.push("cone");
+                mapResponse.push("cone");
                 break;
             default:
                 res.status = "KO";
@@ -110,46 +106,51 @@ function getComplementaryShapes(shapesArray) {
         }
     }
 
+    //make finalShapes
+    mapResponse = mapCallouts(mapResponse, dictionary, true);
+
+    if (mapResponse.status === 'OK') {
+        res.shapes = mapResponse.shapes;
+    }
+    else {
+        res.status = 'KO';
+        res.message = shapes.message;
+    }
+
     res.message = res.message
         ? res.message
-        : getComplementaryShapes.name + " succesful.";
+        : getFinalShapes.name + " succesful.";
 
     return res;
 }
 
 function updateArrayForFinalShapes(shapes, finalShapes) {
-    var updatedArray = [];
-
+    
     for (let index = 0; index < shapes.length; index++) {
 		var currentShape = shapes[index];
-		var currentShapePosition = currentShape.position;
-        var currentShapeArray = currentShape.twoDimensionalShapes;
+		var currentShapePosition = currentShape.getPosition();
+        var currentShapeArray = currentShape.getTwoDimensionalShapes();
         var finalShape = finalShapes.filter(function(shape) {
-			return shape.position === currentShapePosition;
+			return shape.getPosition() === currentShapePosition;
 		  })[0];
-		var finalShapeArray = finalShape.twoDimensionalShapes;
+		var finalShapeArray = finalShape.getTwoDimensionalShapes();
         var checkCurrent = checkHelper.check(
             currentShapeArray,
             finalShapeArray
         );
 
-        var shape = Object.assign({}, shapes[index]);
-
         if (checkCurrent.hasSomeShapes) {
-            shape.hasForFinalShape = checkCurrent.foundMatches;
+            currentShape.setHas(checkCurrent.foundMatches);
         }
 
-        shape.needsForFinalShape = checkCurrent.neededShapes;
+        currentShape.setNeeds(checkCurrent.neededShapes);
 
-        updatedArray.push(shape);
     }
 
-    return updatedArray;
+    return shapes;
 }
 
 function initializeDissection(shapes, finalShapes) {
-    var dissectingShapes = [];
-    
     var currentShape;
     var finalShape;
     var currentShapeArray;
@@ -159,12 +160,12 @@ function initializeDissection(shapes, finalShapes) {
     for (let index = 0; index < shapes.length; index++) {
         currentShape = shapes[index];
         finalShape = finalShapes[index];
-        currentShapeArray = currentShape.twoDimensionalShapes;
-        finalShapeArray = finalShape.twoDimensionalShapes;
+        currentShapeArray = currentShape.getTwoDimensionalShapes();
+        finalShapeArray = finalShape.getTwoDimensionalShapes();
 
         if (
-            currentShape.hasForFinalShape &&
-            currentShapeArray[0] === currentShape.hasForFinalShape[0]
+            currentShape.getHas() &&
+            currentShapeArray[0] === currentShape.getHas()[0]
         ) {
             symbolToGive = {
                 symbol: currentShapeArray[1],
@@ -176,22 +177,10 @@ function initializeDissection(shapes, finalShapes) {
                 index: 0,
             };
         }
-
-        var shape = Object.assign({}, currentShape);
-
-        shape.symbolToGive = symbolToGive;
-
-        console.log(
-            "Shape: '" +
-                currentShape.threeDimensionalShape +
-                "' needs to give " +
-                symbolToGive.symbol
-        );
-
-        dissectingShapes.push(shape);
+        currentShape.setSymbolToGive(symbolToGive);
     }
 
-    return dissectingShapes;
+    return shapes;
 }
 
 function arraysHaveSameElements(arr1, arr2) {
@@ -218,13 +207,40 @@ function arraysHaveSameElements(arr1, arr2) {
     return countMap.size === 0;
 }
 
+function writeStep(shape, type) {
+    var message;
+
+    var symbol = shape.getSymbolToGive().symbol;
+    var threeDshape = shape.getThreeDimensionalShape();
+    var position;
+    switch(shape.getPosition()) {
+        case "0":
+            position = 'left';
+            break;
+        case "1":
+            position = 'mid';
+            break;
+        case "2":
+            position = 'right';
+            break;
+    }
+
+    message = 
+    'Dissect ' + symbol + 
+    ' from ' + threeDshape + 
+    ' on ' + position;
+
+    return message;
+}
+
 const dissectionHelper = {
     mapCallouts: mapCallouts,
     mapThreeDimensionalShape: mapThreeDimensionalShape,
-    printShapes: printShapes,
-    getComplementaryShapes: getComplementaryShapes,
+    printSteps: printSteps,
+    getFinalShapes: getFinalShapes,
     updateArrayForFinalShapes: updateArrayForFinalShapes,
-    initializeDissection: initializeDissection
+    initializeDissection: initializeDissection,
+    writeStep: writeStep
 }
 
 export default dissectionHelper;

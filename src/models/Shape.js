@@ -1,44 +1,62 @@
 class Shape {
-    constructor(shapeObject) {
+    constructor(shapeObject, isFinalShape) {
       this.threeDimensionalShape = shapeObject.threeDimensionalShape;
       this.twoDimensionalShapes = shapeObject.twoDimensionalShapes;
-
-      this.position = -1;
+      this.position = shapeObject.position;
+      this.needsForFinalShape = [];
+      this.hasForFinalShape = isFinalShape ? shapeObject.twoDimensionalShapes : [];
+      this.symbolToGive = {
+        symbol: '',
+        index: -1
+      }
     }
 
-    // getters
-  
+    // 3Dshapes  
     getThreeDimensionalShape() {
       return this.threeDimensionalShape;
     }
-  
-    getTwoDimensionalShapes() {
-      return this.twoDimensionalShapes;
-    }
-
-    getPosition() {
-      return this.position;
-    }
-  
-    // setters
-
     setThreeDimensionalShape(shape) {
       this.threeDimensionalShape = shape;
     }
   
+    // 2Dshapes
+    getTwoDimensionalShapes() {
+      return [...this.twoDimensionalShapes];
+    }
     setTwoDimensionalShapes(shapes) {
       this.twoDimensionalShapes = shapes;
     }
 
+    // Position
+    getPosition() {
+      return this.position;
+    }
     setPosition(index) {
       this.position = index;
     }
-  
-    // Metodo per stampare le informazioni della forma
-    printInfo() {
-      console.log(`Three-dimensional shape: ${this.getThreeDimensionalShape()}`);
-      console.log(`Two-dimensional shapes: ${this.getTwoDimensionalShapes()}`);
-      console.log(`position: ${this.getPosition()}`);
+
+    // Needs
+    getNeeds() {
+      return [...this.needsForFinalShape];
+    }
+    setNeeds(neededShapesArray) {
+      this.needsForFinalShape = neededShapesArray;
+    }
+
+    // Has
+    getHas() {
+      return [...this.hasForFinalShape];
+    }
+    setHas(gottenShapesArray) {
+      this.hasForFinalShape = gottenShapesArray;
+    }
+
+    // SymbolToGive
+    getSymbolToGive() {
+      return {...this.symbolToGive};
+    }
+    setSymbolToGive(symbolToGive) {
+      this.symbolToGive = symbolToGive;
     }
   }
 
