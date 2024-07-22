@@ -5,7 +5,7 @@ import Shape from "../models/Shape";
 import dictionary from "../constants/shapeDictionary";
 
 function dissection(startingShapes, finalShapes) {
-    console.log("starting dissection step");
+    console.log("Starting dissection");
 
     var isFinalShape = false;
     var i = 0; // SECURITY INDEX FOR AVOIDING INFINITE LOOPS
@@ -45,7 +45,7 @@ function dissectionStep(startingShapes, finalShapes) {
     dissectingShapes = dissectionHelper.initializeDissection(startingShapes, finalShapes);
 
     // STEP 1 - DISSECTION of the previously calculated element.
-    // TODO: prettify the oob bs + too nested 1finalShape -> escape
+    // TODO: prettify the oob bs
     var i = 0;
     var oob = false;
 
@@ -66,12 +66,12 @@ function dissectionStep(startingShapes, finalShapes) {
         );
 
         var symbolToGive = currentShape.getSymbolToGive();
-        var poppedIndex = symbolToGive && symbolToGive.index;
-        var currentlyPopped = currentShapeArray[poppedIndex] || false;
+        var givingIndex = symbolToGive && symbolToGive.index;
+        var currentlyGiving = currentShapeArray[givingIndex] || false;
 
         var j = 0;
-	    var dissectedShapes = [];
-	    var otherShape;
+        var dissectedShapes = [];
+        var otherShape;
         var otherSymbol;
         var otherShapeArray;
 
@@ -83,7 +83,7 @@ function dissectionStep(startingShapes, finalShapes) {
 
         // Cycle through all other shapes and dissect
         while (j < dissectingShapes.length) {
-			otherShape = dissectingShapes[j];
+            otherShape = dissectingShapes[j];
             otherSymbol = otherShape.getSymbolToGive();
 
             if (otherShape === currentShape) {
@@ -92,7 +92,7 @@ function dissectionStep(startingShapes, finalShapes) {
             }
 
             if (
-                !otherShape.getNeeds().includes(currentlyPopped) ||
+                !otherShape.getNeeds().includes(currentlyGiving) ||
                 !otherSymbol ||
                 dissectedShapes.length > 0
             ) {
@@ -102,11 +102,11 @@ function dissectionStep(startingShapes, finalShapes) {
 
             otherShapeArray = otherShape.getTwoDimensionalShapes();
 
-            otherShapeArray.push(currentlyPopped);
+            otherShapeArray.push(currentlyGiving);
             currentShapeArray.push(otherSymbol.symbol);
 
             otherShapeArray.splice(otherSymbol.index, 1);
-            currentShapeArray.splice(poppedIndex, 1);
+            currentShapeArray.splice(givingIndex, 1);
 
             currentShape.setTwoDimensionalShapes(currentShapeArray);
             otherShape.setTwoDimensionalShapes(otherShapeArray);
@@ -132,13 +132,15 @@ function dissectionStep(startingShapes, finalShapes) {
         console.log("---DISSECTED---");
         console.log(dissectedShapes);
 
-		// CHECK OOB - currently disabled. the one above should be enough
-		//oob = dissectedShapes.length !== dissectingShapes.length;
+        // CHECK OOB - currently disabled. the one above should be enough
+        //oob = dissectedShapes.length !== dissectingShapes.length;
 
         i++;
     }
 
-    res.shapes = dissectingShapes
+    // STEP 3 - RETURN the dissected shapes in a JSON res format
+
+    res.shapes = dissectingShapes;
 
     return res;
 }
@@ -209,7 +211,6 @@ function main() {
             finalShapes.shapes
         );
 
-        console.log(startingShapes);
         dissection(startingShapes.shapes, finalShapes.shapes);
     }
 }

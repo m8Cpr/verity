@@ -1,9 +1,14 @@
 import { useState } from "react";
-import reactLogo from "./assets/react.svg";
+
+import squareIcon from "./assets/icons/square.svg";
 import viteLogo from "/vite.svg";
+
+
 import "./App.css";
 import dictionary from "./constants/shapeDictionary";
 import verity from "./scripts/verity";
+
+import ShapeSelector from "./components/ShapeSelector";
 
 function App() {
     const shapes = Object.keys(dictionary);
@@ -14,18 +19,6 @@ function App() {
 
     return (
         <>
-            <div>
-                <a href="https://vitejs.dev" target="_blank">
-                    <img src={viteLogo} className="logo" alt="Vite logo" />
-                </a>
-                <a href="https://react.dev" target="_blank">
-                    <img
-                        src={reactLogo}
-                        className="logo react"
-                        alt="React logo"
-                    />
-                </a>
-            </div>
             <h1>Verity Encounter</h1>
                 <button onClick={handleClick}>Lancia Verity.main</button>
             <div>
@@ -34,17 +27,8 @@ function App() {
             </div>
             <div className="card">
                 <h2>3D Shapes</h2>
-                <ul>
-                    {shapes.map((shape) => (
-                        <li key={shape}>
-                            {shape} - {dictionary[shape].threeDimensionalShape}
-                        </li>
-                    ))}
-                </ul>
+                <ShapeSelector shapes={shapes} />
             </div>
-            <p className="read-the-docs">
-                Click on the Vite and React logos to learn more
-            </p>
         </>
     );
 }
