@@ -195,7 +195,7 @@ function updateDissection(newShapes, oldShapes, finalShapes) {
 function main() {
     var insideCallouts = ["C", "T", "S"];
     var outsideCallouts = ["cube", "sphere", "pyramid"];
-    var objectDictionary = JSON.parse(JSON.stringify(dictionary));
+    var objectDictionary = JSON.parse(JSON.stringify(dictionary.outside));
 
     var finalShapes = dissectionHelper.getFinalShapes(insideCallouts, objectDictionary);
     var startingShapes = dissectionHelper.mapCallouts(outsideCallouts, objectDictionary);
