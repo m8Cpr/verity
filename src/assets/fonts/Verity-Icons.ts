@@ -5,6 +5,7 @@ export type VerityIconsId =
   | "cube"
   | "prism"
   | "pyramid"
+  | "raid"
   | "sphere"
   | "square"
   | "triangle";
@@ -16,6 +17,7 @@ export type VerityIconsKey =
   | "Cube"
   | "Prism"
   | "Pyramid"
+  | "Raid"
   | "Sphere"
   | "Square"
   | "Triangle";
@@ -27,6 +29,7 @@ export enum VerityIcons {
   Cube = "cube",
   Prism = "prism",
   Pyramid = "pyramid",
+  Raid = "raid",
   Sphere = "sphere",
   Square = "square",
   Triangle = "triangle",
@@ -39,7 +42,8 @@ export const VERITY_ICONS_CODEPOINTS: { [key in VerityIcons]: string } = {
   [VerityIcons.Cube]: "61700",
   [VerityIcons.Prism]: "61701",
   [VerityIcons.Pyramid]: "61702",
-  [VerityIcons.Sphere]: "61703",
-  [VerityIcons.Square]: "61704",
-  [VerityIcons.Triangle]: "61705",
+  [VerityIcons.Raid]: "61703",
+  [VerityIcons.Sphere]: "61704",
+  [VerityIcons.Square]: "61705",
+  [VerityIcons.Triangle]: "61706",
 };

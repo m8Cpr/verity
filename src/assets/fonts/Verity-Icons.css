@@ -1,7 +1,7 @@
 @font-face {
   font-display: block;
   font-family: "Verity-Icons";
-  src: url("./Verity-Icons.woff2?8f5f510d645fb5914104ab38d9afa64e") format("woff2");
+  src: url("./Verity-Icons.woff2?5c97d452d81f388baa67532d11163c60") format("woff2");
 }
 
 i[class^="icon-"]::before, i[class*=" icon-"]::before {
@@ -33,12 +33,15 @@ i[class^="icon-"]::before, i[class*=" icon-"]::before {
 .icon-pyramid::before {
   content: "\f106";
 }
-.icon-sphere::before {
+.icon-raid::before {
   content: "\f107";
 }
-.icon-square::before {
+.icon-sphere::before {
   content: "\f108";
 }
-.icon-triangle::before {
+.icon-square::before {
   content: "\f109";
+}
+.icon-triangle::before {
+  content: "\f10a";
 }
