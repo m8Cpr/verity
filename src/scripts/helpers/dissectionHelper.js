@@ -39,7 +39,7 @@ function mapCallouts(callouts, objectDictionary, areFinalShapes) {
 }
 
 function mapThreeDimensionalShape(shapeCombination) {
-    var objectDictionary = JSON.parse(JSON.stringify(dictionary));
+    var objectDictionary = JSON.parse(JSON.stringify(dictionary.outside));
 
 
     for (let key in objectDictionary) {

@@ -1,0 +1,44 @@
+@font-face {
+  font-display: block;
+  font-family: "Verity-Icons";
+  src: url("./Verity-Icons.woff2?8f5f510d645fb5914104ab38d9afa64e") format("woff2");
+}
+
+i[class^="icon-"]::before, i[class*=" icon-"]::before {
+  font-family: Verity-Icons !important;
+  font-style: normal;
+  font-weight: normal !important;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-cilinder::before {
+  content: "\f101";
+}
+.icon-circle::before {
+  content: "\f102";
+}
+.icon-cone::before {
+  content: "\f103";
+}
+.icon-cube::before {
+  content: "\f104";
+}
+.icon-prism::before {
+  content: "\f105";
+}
+.icon-pyramid::before {
+  content: "\f106";
+}
+.icon-sphere::before {
+  content: "\f107";
+}
+.icon-square::before {
+  content: "\f108";
+}
+.icon-triangle::before {
+  content: "\f109";
+}
