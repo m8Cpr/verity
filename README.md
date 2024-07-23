@@ -1,8 +1,8 @@
-# React + Vite
+# Verity encounter solver
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Minimal project built for solving the Verity encounter puzzle in Salvation's Edge raid from Destiny 2.
 
-Currently, two official plugins are available:
+Built with Vite + React, implementing:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [@twbs/fantasticon](https://github.com/twbs/fantasticon) An forked version of the Fantasticon library by the bootstrap folks, that solves a problem related to the glob getFileDirectory method.
+- [tailwindcss] (https://tailwindcss.com/) No fancy presentation needed for the goat.
