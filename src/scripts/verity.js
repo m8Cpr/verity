@@ -22,6 +22,8 @@ function dissection(startingShapes, finalShapes) {
     } while(!isFinalShape && i < 5)
 
 	dissectionHelper.printSteps(steps, i);
+
+    return steps;
 }
 
 function dissectionStep(startingShapes, finalShapes) {
@@ -193,8 +195,8 @@ function updateDissection(newShapes, oldShapes, finalShapes) {
 // CODE STARTS HERE
 
 function main(insideCallouts, outsideCallouts) {
-    // var insideCallouts = ["C", "T", "S"]; // for now, i'm keeping these two as fallback since they work
-    // var outsideCallouts = ["sphere", "prism", "prism"];
+    //var insideCallouts = ["C", "T", "S"]; // for now, i'm keeping these two as fallback since they work
+    //var outsideCallouts = ["sphere", "prism", "prism"];
     var objectDictionary = JSON.parse(JSON.stringify(dictionary.outside));
 
     var finalShapes = dissectionHelper.getFinalShapes(insideCallouts, objectDictionary);
@@ -211,7 +213,7 @@ function main(insideCallouts, outsideCallouts) {
             finalShapes.shapes
         );
 
-        dissection(startingShapes.shapes, finalShapes.shapes);
+        return dissection(startingShapes.shapes, finalShapes.shapes);
     }
 }
 
