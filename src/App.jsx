@@ -9,9 +9,22 @@ import ShapeSelector from "./components/ShapeSelector";
 function App() {
 
     const containerClasses = 'container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-12';
+
+    // This handleClick will be replaced by a function that will trigger when all shapes has been selected
     
     const handleClick = () => {
-        verity.main(); // Assuming 'verity' is an object with a 'main' function
+        const $shapeSelector = document.querySelectorAll('.shape-selector');
+        var innerShapes = [];
+        var outerShapes = [];
+
+        for(let i= 0; i < $shapeSelector.length; i++) {
+            var innerShape = $shapeSelector[i].getAttribute('data-inside');
+            var outerShape = $shapeSelector[i].getAttribute('data-outside');
+            innerShapes.push(innerShape);
+            outerShapes.push(outerShape);
+        }
+        
+        verity.main(innerShapes, outerShapes);
       };
 
     return (
@@ -20,9 +33,9 @@ function App() {
             <button onClick={handleClick}>Lancia Verity.main</button>
 
             <div className={containerClasses}>
-                <ShapeSelector position="0"/>
-                <ShapeSelector position="1"/>
-                <ShapeSelector position="2" classes="md:col-span-2 lg:col-span-1"/>
+                <ShapeSelector position="0" classes="flex flex-col"/>
+                <ShapeSelector position="1" classes="flex flex-col"/>
+                <ShapeSelector position="2" classes="flex flex-col md:col-span-2 lg:col-span-1"/>
             </div>
 
         </>
