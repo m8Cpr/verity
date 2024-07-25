@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import dictionary from "../constants/shapeDictionary";
-import "../assets/fonts/Verity-Icons.css"
+import "../assets/fonts/Verity-Icons.css";
+import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
+
 
 
 const ShapeSelector = (props) => {
@@ -28,45 +30,51 @@ const ShapeSelector = (props) => {
     }
 
     // Tailwind classes
-    const liButtonClasses = 'border rounded bg-red-600 hover:bg-slate-400';
+    const liButtonClasses = '';
     const ulClasses = 'grid grid-cols-3 gap-2 md:gap-4 my-4';
     const shapeSelectorClasses = 'shape-selector shape-selector-' + position +
         (props.classes ? (' ' + props.classes) : '');
 
     return(
-        <div className={shapeSelectorClasses}
+        <Card className={shapeSelectorClasses}
         data-inside={innerShape} data-outside={outerShape}>
-            <span className='text-xl font-bold'>{position}</span>
-            <span className='text-xl'>Inside shapes</span>
-            <ul id={'inner-selector-' + position} className={ulClasses}>
-                {insideShapes.map((shape) => (
-                    <li key={shape}>
-                        <button className={'item-' + dictionary.inside[shape].name + ' ' +
-                            liButtonClasses  + ' ' + (innerShape === shape ?  ' is-selected  bg-slate-400' : '')}
-                            onClick={selectShape}
-                            data-side={INSIDE}
-                            data-shape={shape}>
-                            <i className={'icon-' + dictionary.inside[shape].name}></i>
-                        </button>
-                    </li>
-                ))}
-            </ul>
+            <CardHeader className="justify-center">
+                <span className='text-xl font-bold'>{position}</span>
+            </CardHeader>
+            <Divider />
+            <CardBody className=" items-center">
+                <span className='text-xl'>Inside shapes</span>
+                <ul id={'inner-selector-' + position} className={ulClasses}>
+                    {insideShapes.map((shape) => (
+                        <li key={shape}>
+                            <Button className={'item-' + dictionary.inside[shape].name + ' ' +
+                                liButtonClasses  + ' ' + (innerShape === shape ?  ' is-selected  bg-slate-400' : '')}
+                                onPress={selectShape}
+                                data-side={INSIDE}
+                                data-shape={shape}>
+                                <i className={'icon-' + dictionary.inside[shape].name}></i>
+                            </Button>
+                        </li>
+                    ))}
+                </ul>
+            <Divider />
+                <span className='text-xl pt-3'>Outside shapes</span>
+                <ul id={'outer-selector-' + position} className={ulClasses}>
+                    {outsideShapes.map((shape) => (
+                        <li key={shape}>
+                            <Button className={'item-' + dictionary.outside[shape].threeDimensionalShape + ' ' +
+                                liButtonClasses + ' ' + (outerShape === shape ?  ' is-selected bg-slate-400' : '')}
+                                onPress={selectShape}
+                                data-side={OUTSIDE}
+                                data-shape={shape}>
+                                <i className={'icon-' + dictionary.outside[shape].threeDimensionalShape}></i>
+                            </Button>
+                        </li>
+                    ))}
+                </ul>
+            </CardBody>
             
-            <span className='text-xl'>Outside shapes</span>
-            <ul id={'outer-selector-' + position} className={ulClasses}>
-                {outsideShapes.map((shape) => (
-                    <li key={shape}>
-                        <button className={'item-' + dictionary.outside[shape].threeDimensionalShape + ' ' +
-                            liButtonClasses + ' ' + (outerShape === shape ?  ' is-selected bg-slate-400' : '')}
-                            onClick={selectShape}
-                            data-side={OUTSIDE}
-                            data-shape={shape}>
-                            <i className={'icon-' + dictionary.outside[shape].threeDimensionalShape}></i>
-                        </button>
-                    </li>
-                ))}
-            </ul>
-        </div>
+        </Card>
     )
 }
 

@@ -62,8 +62,8 @@ function printSteps(stepObjectArray, iterations) {
     
     for (let index in stepObjectArray) {
         shapes = [];
-        console.log(stepObjectArray[index].firstDissection);
-        console.log(stepObjectArray[index].secondDissection);
+        console.log(stepObjectArray[index].firstDissection.message);
+        console.log(stepObjectArray[index].secondDissection.message);
 
         stepObjectArray[index].currentShapes.forEach(shape => {
             shapes.push(shape.getThreeDimensionalShape());
@@ -211,6 +211,7 @@ function writeStep(shape, type) {
     var message;
 
     var symbol = shape.getSymbolToGive().symbol;
+    symbol = dictionary.inside[symbol].name;
     var threeDshape = shape.getThreeDimensionalShape();
     var position;
     switch(shape.getPosition()) {
@@ -230,7 +231,14 @@ function writeStep(shape, type) {
     ' from ' + threeDshape + 
     ' on ' + position;
 
-    return message;
+    var messageObject = {
+        message: message,
+        symbol: symbol,
+        shape: threeDshape,
+        position: position
+    }
+
+    return messageObject;
 }
 
 const dissectionHelper = {
