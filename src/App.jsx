@@ -4,14 +4,11 @@ import "./App.css";
 import dictionary from "./constants/shapeDictionary";
 import verity from "./scripts/verity";
 
-import ShapeSelector from "./components/ShapeSelector";
 import ResolutionSteps from "./components/ResolutionSteps";
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
+import ShapeSelectorContainer from "./components/ShapeSelectorContainer";
 
 function App() {
-
-    // Tailwind classes
-    const containerClasses = 'container grid grid-cols-1 my-4 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-12';
 
     // React states and hooks
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
@@ -59,21 +56,6 @@ function App() {
 
     }, [isOpen])
 
-    const renderShapeSelectors = () => {
-        const shapeSelectors = [];
-        for (let i = 0; i < 3; i++) {
-          shapeSelectors.push(
-            <ShapeSelector 
-            key={i}
-            index={i}
-            position={i.toString()} 
-            classes={`flex flex-col ${i === 2 ? 'md:col-span-2 lg:col-span-1' : ''}`} 
-            />
-          );
-        }
-        return shapeSelectors;
-      };
-
     return (
         <>
             <h1>Verity Encounter</h1>
@@ -85,9 +67,7 @@ function App() {
                 Lancia verity.main
             </Button>
 
-            <div className={containerClasses}>
-                {renderShapeSelectors()}
-            </div>
+            <ShapeSelectorContainer />
 
             <Button onPress={onOpen} color="primary" variant="shadow" className="lg:hidden">
                 Lancia verity.main
