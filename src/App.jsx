@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 
 import "./App.css";
-import dictionary from "./constants/shapeDictionary";
 import verity from "./scripts/verity";
 
 import ResolutionSteps from "./components/ResolutionSteps";
@@ -13,26 +12,11 @@ function App() {
     // React states and hooks
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
     const [steps, setSteps] = useState(false);
-
     const [validity, setValidity] = useState(false);
 
-    // This handleClick will be replaced by a function that will trigger when all shapes has been selected
-    
+    // This handleClick is here for debugging/testing purposes only
     const handleClick = () => {
-        const $shapeSelector = document.querySelectorAll('.shape-selector');
-        var innerShapes = [];
-        var outerShapes = [];
-
-        for(let i= 0; i < $shapeSelector.length; i++) {
-            var innerShape = $shapeSelector[i].getAttribute('data-inside');
-            var outerShape = $shapeSelector[i].getAttribute('data-outside');
-            innerShapes.push(innerShape);
-            outerShapes.push(outerShape);
-        }
-        
-        if (innerShapes.length === outerShapes.length && innerShapes.length === 3) {
-            setSteps(verity.main());
-        }
+        setSteps(verity.main());
     };
 
     // Might want to put the result inside a useMemo() to recall these operations only if necesary
