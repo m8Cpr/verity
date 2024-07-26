@@ -51,17 +51,22 @@ function dissectionStep(startingShapes, finalShapes) {
 
     // STEP 1 - DISSECTION of the previously calculated element.
     var i = 0;
-    var oob = false;
-
+    
     // for each shape attempt to perform a dissection, skip final shapes
-    while (i < dissectingShapes.length && !oob) {
+    while (i < dissectingShapes.length) {
         // starting vs ongoing
-        dissectingShapes = dissectedShapes ? dissectedShapes : dissectingShapes;
+        dissectingShapes = (dissectedShapes && dissectedShapes.length > 0) ? dissectedShapes : dissectingShapes;
 
         currentShape = dissectingShapes[i];
         finalShape = finalShapes[i];
-        currentShapeArray = currentShape && currentShape.getTwoDimensionalShapes();
-        finalShapeArray = finalShape && finalShape.getTwoDimensionalShapes();
+
+        if (!currentShape || !finalShape) {
+            i++;
+            continue;
+        }
+
+        currentShapeArray = currentShape.getTwoDimensionalShapes();
+        finalShapeArray = finalShape.getTwoDimensionalShapes();
 
         // check if final shape | skip iteration if true
         isFinalShape = checkHelper.finalCheck(
@@ -80,7 +85,6 @@ function dissectionStep(startingShapes, finalShapes) {
         var otherShapeArray;
 
         if (isFinalShape) {
-            //oob = dissectedShapes.length !== dissectingShapes.length;
             i++;
             continue;
         }
@@ -131,19 +135,18 @@ function dissectionStep(startingShapes, finalShapes) {
             finalShapes
         );
 
-        var step = {
-            firstDissection: dissectionHelper.writeStep(currentShape, 'shape'),
-            secondDissection: dissectionHelper.writeStep(otherShape, 'shape'),
-            currentShapes: dissectedShapes
-        };
+        var step;
+        if (currentShape !== otherShape) {
+            step = {
+                firstDissection: dissectionHelper.writeStep(currentShape, 'shape'),
+                secondDissection: dissectionHelper.writeStep(otherShape, 'shape'),
+                currentShapes: dissectedShapes
+            };
+            res.steps.push(step)
+        }
 
         console.log("---DISSECTED---");
         console.log(dissectedShapes);
-
-        res.steps.push(step)
-
-        // CHECK OOB - currently disabled. the one above should be enough
-        //oob = dissectedShapes.length !== dissectingShapes.length;
 
         i++;
     }
@@ -204,8 +207,8 @@ function updateDissection(newShapes, oldShapes, finalShapes) {
 // CODE STARTS HERE
 
 function main(insideCallouts, outsideCallouts) {
-    insideCallouts = insideCallouts || ["S", "C", "T"]; // for now, i'm keeping these two as fallback since they work
-    outsideCallouts = outsideCallouts || ["cube", "cone", "cone"];
+    insideCallouts = insideCallouts || ["C", "T", "S"]; // for now, i'm keeping these two as fallback since they work
+    outsideCallouts = outsideCallouts || ["cube", "sphere", "pyramid"];
     var objectDictionary = JSON.parse(JSON.stringify(dictionary.outside));
 
     var finalShapes = dissectionHelper.getFinalShapes(insideCallouts, objectDictionary);
