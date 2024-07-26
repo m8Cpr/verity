@@ -2,13 +2,12 @@ import { Divider } from "@nextui-org/react";
 import React from "react";
 
 const ResolutionSteps = (props) => {
-    // TOGLI!!!!!
     const { steps } = props;
 
     const dissectionStepClasses = "flex flex-col gap-2 pt-2"
     return (
-        <ul className="step-list">
-            {steps && steps.map((item, index) => {
+        <ul className="step-list flex flex-col">
+            {steps.length > 0 ? steps.map((item, index) => {
                 if (!item) return null;
 
                 const { firstDissection, secondDissection, currentShapes } = item;
@@ -38,7 +37,10 @@ const ResolutionSteps = (props) => {
                         <Divider />
                     </li>
                 );
-            })}
+            }) : <>
+                    <span className="text-xl font-bold text-center uppercase">Lucky!</span>
+                    <span className="pt-8">Every outside shape is already a final shape, that's a 1/120 chances!</span>
+                </>}
 
         </ul>
     );
