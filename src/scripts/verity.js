@@ -17,7 +17,9 @@ function dissection(startingShapes, finalShapes) {
         shapes = res ? res.shapes : startingShapes;
 	    res = dissectionStep(shapes, finalShapes);
 		isFinalShape = checkHelper.isFinalShape(res.shapes);
-        steps.push(res.step);
+        res.steps.forEach(step => {
+            steps.push(step);
+        })
 		i++;
     } while(!isFinalShape && i < 5)
 
@@ -31,7 +33,8 @@ function dissectionStep(startingShapes, finalShapes) {
     console.log(startingShapes);
 
     var res = {
-        status: 'OK'
+        status: 'OK',
+        steps: []
     }
 
     // STEP 0 - INITIALIZE dissectingShapes array
@@ -77,7 +80,7 @@ function dissectionStep(startingShapes, finalShapes) {
         var otherShapeArray;
 
         if (isFinalShape) {
-            oob = dissectedShapes.length !== dissectingShapes.length;
+            //oob = dissectedShapes.length !== dissectingShapes.length;
             i++;
             continue;
         }
@@ -128,7 +131,7 @@ function dissectionStep(startingShapes, finalShapes) {
             finalShapes
         );
 
-        res.step = {
+        var step = {
             firstDissection: dissectionHelper.writeStep(currentShape, 'shape'),
             secondDissection: dissectionHelper.writeStep(otherShape, 'shape'),
             currentShapes: dissectedShapes
@@ -136,6 +139,8 @@ function dissectionStep(startingShapes, finalShapes) {
 
         console.log("---DISSECTED---");
         console.log(dissectedShapes);
+
+        res.steps.push(step)
 
         // CHECK OOB - currently disabled. the one above should be enough
         //oob = dissectedShapes.length !== dissectingShapes.length;
@@ -190,6 +195,7 @@ function updateDissection(newShapes, oldShapes, finalShapes) {
 
     combinedShapes.sort((a, b) => a.position - b.position);
 
+    combinedShapes = dissectionHelper.initializeDissection(combinedShapes, finalShapes);
     combinedShapes = dissectionHelper.updateArrayForFinalShapes(combinedShapes, finalShapes);
 
     return combinedShapes;
@@ -198,8 +204,8 @@ function updateDissection(newShapes, oldShapes, finalShapes) {
 // CODE STARTS HERE
 
 function main(insideCallouts, outsideCallouts) {
-    //var insideCallouts = ["C", "T", "S"]; // for now, i'm keeping these two as fallback since they work
-    //var outsideCallouts = ["sphere", "prism", "prism"];
+    insideCallouts = insideCallouts || ["S", "C", "T"]; // for now, i'm keeping these two as fallback since they work
+    outsideCallouts = outsideCallouts || ["cube", "cone", "cone"];
     var objectDictionary = JSON.parse(JSON.stringify(dictionary.outside));
 
     var finalShapes = dissectionHelper.getFinalShapes(insideCallouts, objectDictionary);
