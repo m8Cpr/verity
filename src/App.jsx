@@ -42,18 +42,18 @@ function App() {
         if (!isOpen) return;
 
         const $shapeSelector = document.querySelectorAll('.shape-selector');
-        var innerShapesArray = [];
-        var outerShapesArray = [];
+        var innerShapes = [];
+        var outerShapes = [];
 
         for(let i= 0; i < $shapeSelector.length; i++) {
             var innerShape = $shapeSelector[i].getAttribute('data-inside');
             var outerShape = $shapeSelector[i].getAttribute('data-outside');
-            innerShapesArray.push(innerShape);
-            outerShapesArray.push(outerShape);
+            innerShapes.push(innerShape);
+            outerShapes.push(outerShape);
         }
 
-        if (innerShapesArray.length === outerShapesArray.length && outerShapesArray.length === 3) {
-            setSteps(verity.main(innerShapesArray, outerShapesArray));
+        if (innerShapes.length === outerShapes.length && innerShapes.length === 3) {
+            setSteps(verity.main(innerShapes, outerShapes));
         }
 
     }, [isOpen])

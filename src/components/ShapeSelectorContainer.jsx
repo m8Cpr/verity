@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import ShapeSelector from "./ShapeSelector";
 import checkHelper from "../scripts/helpers/checkHelper";
 
@@ -54,11 +54,6 @@ const ShapeSelectorContainer = (props) => {
         }
         return shapeSelectors;
     };
-
-    // useEffect(() => {
-    //     onValidityChange(shapeData.valid);
-    // },
-    // [shapeData.valid])
 
     return(
         <div className={containerClasses}>
