@@ -4,18 +4,17 @@ import "./App.css";
 import dictionary from "./constants/shapeDictionary";
 import verity from "./scripts/verity";
 
-import ShapeSelector from "./components/ShapeSelector";
 import ResolutionSteps from "./components/ResolutionSteps";
 import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
+import ShapeSelectorContainer from "./components/ShapeSelectorContainer";
 
 function App() {
-
-    // Tailwind classes
-    const containerClasses = 'container grid grid-cols-1 my-4 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-12';
 
     // React states and hooks
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
     const [steps, setSteps] = useState(false);
+
+    const [validity, setValidity] = useState(false);
 
     // This handleClick will be replaced by a function that will trigger when all shapes has been selected
     
@@ -59,20 +58,10 @@ function App() {
 
     }, [isOpen])
 
-    const renderShapeSelectors = () => {
-        const shapeSelectors = [];
-        for (let i = 0; i < 3; i++) {
-          shapeSelectors.push(
-            <ShapeSelector 
-            key={i}
-            index={i}
-            position={i.toString()} 
-            classes={`flex flex-col ${i === 2 ? 'md:col-span-2 lg:col-span-1' : ''}`} 
-            />
-          );
-        }
-        return shapeSelectors;
-      };
+    const handleValidityChange = (handledValidity) => {
+        setValidity(handledValidity);
+        return;
+    }
 
     return (
         <>
@@ -81,16 +70,18 @@ function App() {
                 color="primary" 
                 variant="shadow" 
                 className="mt-4 hidden lg:inline-flex" 
-                isDisabled={false}>
-                Lancia verity.main
+                isDisabled={!validity}>
+                {!validity ? 'Select all your shapes' : 'Start verity.main'}
             </Button>
 
-            <div className={containerClasses}>
-                {renderShapeSelectors()}
-            </div>
+            <ShapeSelectorContainer onValidityChange={handleValidityChange}/>
 
-            <Button onPress={onOpen} color="primary" variant="shadow" className="lg:hidden">
-                Lancia verity.main
+            <Button onPress={onOpen} 
+                color="primary" 
+                variant="shadow" 
+                className="lg:hidden"
+                isDisabled={!validity}>
+                {!validity ? 'Select all your shapes' : 'Start verity.main'}
             </Button>
 
             <Modal
@@ -106,7 +97,7 @@ function App() {
                                 Required steps
                             </ModalHeader>
                             <ModalBody>
-                                <ResolutionSteps steps={steps} />
+                                {validity ? <ResolutionSteps steps={steps} /> : 'Why are you here?'}
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" variant="light" onPress={onClose}>
