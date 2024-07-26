@@ -59,17 +59,34 @@ function App() {
 
     }, [isOpen])
 
+    const renderShapeSelectors = () => {
+        const shapeSelectors = [];
+        for (let i = 0; i < 3; i++) {
+          shapeSelectors.push(
+            <ShapeSelector 
+            key={i}
+            index={i}
+            position={i.toString()} 
+            classes={`flex flex-col ${i === 2 ? 'md:col-span-2 lg:col-span-1' : ''}`} 
+            />
+          );
+        }
+        return shapeSelectors;
+      };
+
     return (
         <>
             <h1>Verity Encounter</h1>
-            <Button onPress={onOpen} color="primary" variant="shadow" className="mt-4 hidden lg:inline-flex">
+            <Button onPress={onOpen} 
+                color="primary" 
+                variant="shadow" 
+                className="mt-4 hidden lg:inline-flex" 
+                isDisabled={false}>
                 Lancia verity.main
             </Button>
 
             <div className={containerClasses}>
-                <ShapeSelector position="0" classes="flex flex-col"/>
-                <ShapeSelector position="1" classes="flex flex-col"/>
-                <ShapeSelector position="2" classes="flex flex-col md:col-span-2 lg:col-span-1"/>
+                {renderShapeSelectors()}
             </div>
 
             <Button onPress={onOpen} color="primary" variant="shadow" className="lg:hidden">
@@ -89,7 +106,7 @@ function App() {
                                 Required steps
                             </ModalHeader>
                             <ModalBody>
-                                <ResolutionSteps tmp={steps} />
+                                <ResolutionSteps steps={steps} />
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" variant="light" onPress={onClose}>

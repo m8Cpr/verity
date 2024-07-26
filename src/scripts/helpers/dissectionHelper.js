@@ -62,6 +62,7 @@ function printSteps(stepObjectArray, iterations) {
     
     for (let index in stepObjectArray) {
         shapes = [];
+        if (!stepObjectArray[index]) continue;
         console.log(stepObjectArray[index].firstDissection.message);
         console.log(stepObjectArray[index].secondDissection.message);
 

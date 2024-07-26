@@ -47,7 +47,6 @@ function dissectionStep(startingShapes, finalShapes) {
     dissectingShapes = dissectionHelper.initializeDissection(startingShapes, finalShapes);
 
     // STEP 1 - DISSECTION of the previously calculated element.
-    // TODO: prettify the oob bs
     var i = 0;
     var oob = false;
 
@@ -85,8 +84,13 @@ function dissectionStep(startingShapes, finalShapes) {
 
         // Cycle through all other shapes and dissect
         while (j < dissectingShapes.length) {
+            if (dissectedShapes.length > 0) {
+                j++;
+                continue;
+            }
+
             otherShape = dissectingShapes[j];
-            otherSymbol = otherShape.getSymbolToGive();
+            otherSymbol = otherShape && otherShape.getSymbolToGive();
 
             if (otherShape === currentShape) {
                 j++;
@@ -95,8 +99,7 @@ function dissectionStep(startingShapes, finalShapes) {
 
             if (
                 !otherShape.getNeeds().includes(currentlyGiving) ||
-                !otherSymbol ||
-                dissectedShapes.length > 0
+                !otherSymbol
             ) {
                 j++;
                 continue;
