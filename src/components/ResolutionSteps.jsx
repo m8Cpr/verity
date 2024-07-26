@@ -41,7 +41,6 @@ const ResolutionSteps = (props) => {
                     <span className="text-xl font-bold text-center uppercase">Lucky!</span>
                     <span className="pt-8">Every outside shape is already a final shape, that's a 1/120 chances!</span>
                 </>}
-
         </ul>
     );
 };

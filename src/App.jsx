@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 
 import "./App.css";
 import verity from "./scripts/verity";
-
-import ResolutionSteps from "./components/ResolutionSteps";
-import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 import ShapeSelectorContainer from "./components/ShapeSelectorContainer";
+import ResolutionSteps from "./components/ResolutionSteps";
+
+import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
+import confetti from 'canvas-confetti';
+
 
 function App() {
 
@@ -42,10 +44,21 @@ function App() {
 
     }, [isOpen])
 
+    useEffect(() => {
+        if (steps && steps.length === 0) {
+            handleConfetti();
+        }
+
+    }, [steps])
+
     const handleValidityChange = (handledValidity) => {
         setValidity(handledValidity);
         return;
     }
+
+    const handleConfetti = () => {
+        confetti();
+      };
 
     return (
         <>
