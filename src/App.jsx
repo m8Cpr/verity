@@ -14,6 +14,8 @@ function App() {
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
     const [steps, setSteps] = useState(false);
 
+    const [validity, setValidity] = useState(false);
+
     // This handleClick will be replaced by a function that will trigger when all shapes has been selected
     
     const handleClick = () => {
@@ -40,21 +42,26 @@ function App() {
         if (!isOpen) return;
 
         const $shapeSelector = document.querySelectorAll('.shape-selector');
-        var innerShapes = [];
-        var outerShapes = [];
+        var innerShapesArray = [];
+        var outerShapesArray = [];
 
         for(let i= 0; i < $shapeSelector.length; i++) {
             var innerShape = $shapeSelector[i].getAttribute('data-inside');
             var outerShape = $shapeSelector[i].getAttribute('data-outside');
-            innerShapes.push(innerShape);
-            outerShapes.push(outerShape);
+            innerShapesArray.push(innerShape);
+            outerShapesArray.push(outerShape);
         }
 
-        if (innerShapes.length === outerShapes.length && innerShapes.length === 3) {
-            setSteps(verity.main(innerShapes, outerShapes));
+        if (innerShapesArray.length === outerShapesArray.length && outerShapesArray.length === 3) {
+            setSteps(verity.main(innerShapesArray, outerShapesArray));
         }
 
     }, [isOpen])
+
+    const handleValidityChange = (handledValidity) => {
+        setValidity(handledValidity);
+        return;
+    }
 
     return (
         <>
@@ -63,14 +70,18 @@ function App() {
                 color="primary" 
                 variant="shadow" 
                 className="mt-4 hidden lg:inline-flex" 
-                isDisabled={false}>
-                Lancia verity.main
+                isDisabled={!validity}>
+                {!validity ? 'Select all your shapes' : 'Start verity.main'}
             </Button>
 
-            <ShapeSelectorContainer />
+            <ShapeSelectorContainer onValidityChange={handleValidityChange}/>
 
-            <Button onPress={onOpen} color="primary" variant="shadow" className="lg:hidden">
-                Lancia verity.main
+            <Button onPress={onOpen} 
+                color="primary" 
+                variant="shadow" 
+                className="lg:hidden"
+                isDisabled={!validity}>
+                {!validity ? 'Select all your shapes' : 'Start verity.main'}
             </Button>
 
             <Modal
@@ -86,7 +97,7 @@ function App() {
                                 Required steps
                             </ModalHeader>
                             <ModalBody>
-                                <ResolutionSteps steps={steps} />
+                                {validity ? <ResolutionSteps steps={steps} /> : 'Why are you here?'}
                             </ModalBody>
                             <ModalFooter>
                                 <Button color="danger" variant="light" onPress={onClose}>

@@ -3,9 +3,21 @@ import dictionary from "../constants/shapeDictionary";
 import "../assets/fonts/Verity-Icons.css";
 import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 
-
-
 const ShapeSelector = (props) => {
+
+    // Props
+    const { index, onShapeChange } = props;
+
+    const initialState = {
+        position: index,
+        innerShape: '',
+        outerShape: ''
+    }
+
+    const shapeSides = {
+        inside: 'innerShape',
+        outside: 'outerShape',
+    };
 
     // Position
     const position = props.position === '0' ? 'Left' :
@@ -16,8 +28,7 @@ const ShapeSelector = (props) => {
     // Shapes
     const insideShapes = Object.keys(dictionary.inside);
     const outsideShapes = Object.keys(dictionary.outside);
-    const [innerShape, setInnerShape] = useState('');
-    const [outerShape, setOuterShape] = useState('');
+    const [shapeData, setShapeData] = useState(initialState);
 
     const selectShape = (event) => {
         
@@ -26,7 +37,17 @@ const ShapeSelector = (props) => {
 
         const shape = button.getAttribute('data-shape');
         const side = button.getAttribute('data-side');
-        side === INSIDE ? setInnerShape(shape) : setOuterShape(shape);
+        side === INSIDE ? 'innerShape' : 'outerShape';
+
+        setShapeData((prevData) => {
+            const newShapeData = {
+              ...prevData,
+              [shapeSides[side]]: shape,
+            };
+            onShapeChange(newShapeData); // Chiama la callback del padre
+            return newShapeData;
+        });
+          
     }
 
     // Tailwind classes
@@ -37,7 +58,7 @@ const ShapeSelector = (props) => {
 
     return(
         <Card className={shapeSelectorClasses}
-        data-inside={innerShape} data-outside={outerShape}>
+        data-inside={shapeData.innerShape} data-outside={shapeData.outerShape}>
             <CardHeader className="justify-center">
                 <span className='text-xl font-bold'>{position}</span>
             </CardHeader>
@@ -48,7 +69,7 @@ const ShapeSelector = (props) => {
                     {insideShapes.map((shape) => (
                         <li key={shape}>
                             <Button className={'item-' + dictionary.inside[shape].name + ' ' +
-                                liButtonClasses  + ' ' + (innerShape === shape ?  ' is-selected  bg-slate-400' : '')}
+                                liButtonClasses  + ' ' + (shapeData.innerShape === shape ?  ' is-selected  bg-slate-400' : '')}
                                 onPress={selectShape}
                                 data-side={INSIDE}
                                 data-shape={shape}>
@@ -63,7 +84,7 @@ const ShapeSelector = (props) => {
                     {outsideShapes.map((shape) => (
                         <li key={shape}>
                             <Button className={'item-' + dictionary.outside[shape].threeDimensionalShape + ' ' +
-                                liButtonClasses + ' ' + (outerShape === shape ?  ' is-selected bg-slate-400' : '')}
+                                liButtonClasses + ' ' + (shapeData.outerShape === shape ?  ' is-selected bg-slate-400' : '')}
                                 onPress={selectShape}
                                 data-side={OUTSIDE}
                                 data-shape={shape}>
