@@ -6,7 +6,7 @@ import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 const ShapeSelector = (props) => {
 
     // Props
-    const { index, onShapeChange } = props;
+    const { index, onShapeChange, resetShape } = props;
 
     const initialState = {
         position: index,
@@ -44,11 +44,16 @@ const ShapeSelector = (props) => {
               ...prevData,
               [shapeSides[side]]: shape,
             };
-            onShapeChange(newShapeData); // Chiama la callback del padre
+            onShapeChange(newShapeData);
             return newShapeData;
         });
           
     }
+
+    useEffect(() => {
+        setShapeData(initialState);
+    }, [resetShape])
+
 
     // Tailwind classes
     const liButtonClasses = '';
