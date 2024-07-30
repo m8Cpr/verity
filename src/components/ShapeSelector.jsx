@@ -58,7 +58,7 @@ const ShapeSelector = (props) => {
 
     return(
         <Card className={shapeSelectorClasses}
-        data-inside={shapeData.innerShape} data-outside={shapeData.outerShape}>
+            data-inside={shapeData.innerShape} data-outside={shapeData.outerShape}>
             <CardHeader className="justify-center">
                 <span className='text-xl font-bold'>{position}</span>
             </CardHeader>
