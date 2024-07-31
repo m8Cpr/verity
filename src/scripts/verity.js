@@ -49,14 +49,12 @@ function dissectionStep(startingShapes, finalShapes) {
     // for each shape checks which symbols are to be given away and if there are final shapes ready
     dissectingShapes = dissectionHelper.initializeDissection(startingShapes, finalShapes);
 
-    // STEP 1 - DISSECTION of the previously calculated element.
+    // STEP 1 - DISSECTION of the previously calculated elements.
     var i = 0;
     
     // for each shape attempt to perform a dissection, skip final shapes
     while (i < dissectingShapes.length) {
-        // starting vs ongoing
-        dissectingShapes = (dissectedShapes && dissectedShapes.length > 0) ? dissectedShapes : dissectingShapes;
-
+        
         currentShape = dissectingShapes[i];
         finalShape = finalShapes[i];
 
@@ -74,6 +72,11 @@ function dissectionStep(startingShapes, finalShapes) {
             finalShapeArray
         );
 
+        if (isFinalShape) {
+            i++;
+            continue;
+        }
+
         var symbolToGive = currentShape.getSymbolToGive();
         var givingIndex = symbolToGive && symbolToGive.index;
         var currentlyGiving = currentShapeArray[givingIndex] || false;
@@ -83,11 +86,6 @@ function dissectionStep(startingShapes, finalShapes) {
         var otherShape;
         var otherSymbol;
         var otherShapeArray;
-
-        if (isFinalShape) {
-            i++;
-            continue;
-        }
 
         // Cycle through all other shapes and dissect
         while (j < dissectingShapes.length) {
@@ -148,6 +146,8 @@ function dissectionStep(startingShapes, finalShapes) {
         console.log("---DISSECTED---");
         console.log(dissectedShapes);
 
+        dissectingShapes = dissectedShapes;
+
         i++;
     }
 
@@ -198,13 +198,11 @@ function updateDissection(newShapes, oldShapes, finalShapes) {
 
     combinedShapes.sort((a, b) => a.position - b.position);
 
-    combinedShapes = dissectionHelper.initializeDissection(combinedShapes, finalShapes);
     combinedShapes = dissectionHelper.updateArrayForFinalShapes(combinedShapes, finalShapes);
+    combinedShapes = dissectionHelper.initializeDissection(combinedShapes, finalShapes);
 
     return combinedShapes;
 }
-
-// CODE STARTS HERE
 
 function main(insideCallouts, outsideCallouts) {
     insideCallouts = insideCallouts || ["C", "T", "S"]; // for now, i'm keeping these two as fallback since they work

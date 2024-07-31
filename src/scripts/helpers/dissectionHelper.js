@@ -157,6 +157,8 @@ function initializeDissection(shapes, finalShapes) {
     var currentShapeArray;
     var finalShapeArray;
     var symbolToGive;
+    var symbolIndex;
+    var isFinalShape;
 
     for (let index = 0; index < shapes.length; index++) {
         currentShape = shapes[index];
@@ -164,9 +166,19 @@ function initializeDissection(shapes, finalShapes) {
         currentShapeArray = currentShape.getTwoDimensionalShapes();
         finalShapeArray = finalShape.getTwoDimensionalShapes();
 
+        symbolIndex = currentShape.getHas() &&
+            finalShapeArray.includes(currentShape.getHas()[0]) && 
+            currentShapeArray.indexOf(currentShape.getHas()[0]);
+
+        isFinalShape = checkHelper.finalCheck(currentShapeArray, finalShapeArray);
+        
+        if (isFinalShape) {
+            continue;
+        }
+
+        // non va bene. trova un metodo per restituire sempre il valore corretto.
         if (
-            currentShape.getHas() &&
-            currentShapeArray[0] === currentShape.getHas()[0]
+            symbolIndex === 0
         ) {
             symbolToGive = {
                 symbol: currentShapeArray[1],
