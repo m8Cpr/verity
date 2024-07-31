@@ -1,7 +1,7 @@
 {
   "name": "verity",
   "private": true,
-  "version": "0.0.6-RC01",
+  "version": "0.0.6-RC02",
   "type": "module",
   "scripts": {
     "dev": "vite",
