@@ -34,7 +34,7 @@ const ResolutionSteps = (props) => {
                                 <i key={shapeIndex} className={'px-2 icon-' + shape.threeDimensionalShape}></i>
                             ))}
                         </span>
-                        <Divider />
+                        {index < steps.length -1 && <Divider />}
                     </li>
                 );
             }) : <>

@@ -9,9 +9,32 @@ export default {
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   theme: {
+    colors: {
+      primary: "rgb(var(--color-primary) / <alpha-value>)",
+      primary: {
+        background: "rgb(var(--color-primary-background) / <alpha-value>)"
+      }
+    },
     extend: {},
   },
   darkMode: "class",
-  plugins: [nextui()]
+  plugins: [nextui({
+    themes: {
+      dark: {
+        colors: {
+          primary: {
+            DEFAULT: "#E73109",
+            foreground: "#11181C",
+          },
+          background:"#222831"
+        }
+      },
+      light: {
+        colors: {
+
+        }
+      }
+    }
+  })]
 }
 
