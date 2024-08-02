@@ -57,20 +57,14 @@ function mapThreeDimensionalShape(shapeCombination) {
 
 function printSteps(stepObjectArray, iterations) {
     var shapes;
-
-    console.log('Solved in ' + iterations + ' iterations');
     
     for (let index in stepObjectArray) {
         shapes = [];
         if (!stepObjectArray[index]) continue;
-        console.log(stepObjectArray[index].firstDissection.message);
-        console.log(stepObjectArray[index].secondDissection.message);
 
         stepObjectArray[index].currentShapes.forEach(shape => {
             shapes.push(shape.getThreeDimensionalShape());
         })
-
-        console.log('currentShapes: ' + shapes);
     }
 }
 

@@ -5,7 +5,6 @@ import Shape from "../models/Shape";
 import dictionary from "../constants/shapeDictionary";
 
 function dissection(startingShapes, finalShapes) {
-    console.log("Starting dissection");
 
     var isFinalShape = false;
     var i = 0; // SECURITY INDEX FOR AVOIDING INFINITE LOOPS
@@ -29,9 +28,6 @@ function dissection(startingShapes, finalShapes) {
 }
 
 function dissectionStep(startingShapes, finalShapes) {
-    console.log("---INITIALIZE---");
-    console.log(startingShapes);
-
     var res = {
         status: 'OK',
         steps: []
@@ -143,9 +139,6 @@ function dissectionStep(startingShapes, finalShapes) {
             res.steps.push(step)
         }
 
-        console.log("---DISSECTED---");
-        console.log(dissectedShapes);
-
         dissectingShapes = dissectedShapes;
 
         i++;
@@ -212,10 +205,9 @@ function main(insideCallouts, outsideCallouts) {
     var finalShapes = dissectionHelper.getFinalShapes(insideCallouts, objectDictionary);
     var startingShapes = dissectionHelper.mapCallouts(outsideCallouts, objectDictionary);
 
-    console.log("------START");
-
     if (startingShapes.status !== "OK" || finalShapes.status !== "OK") {
-        console.log("MESSAGGIO DI ERRORE");
+        console.error("Something went wrong.");
+
     } else {
 
         startingShapes.shapes = dissectionHelper.updateArrayForFinalShapes(
