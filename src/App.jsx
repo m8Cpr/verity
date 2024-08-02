@@ -1,21 +1,31 @@
-import React, { useRef } from "react";
+import React, { useRef, useContext } from "react";
 
 import "./App.css";
 import ShapeSelectorContainer from "./components/ShapeSelectorContainer";
 import InfoPanel from "./components/InfoPanel";
+import Header from "./components/Header";
+import { ThemeContext } from "./components/context/ThemeContext";
+import { Chip } from "@nextui-org/react";
 
 function App() {
-    const subHeader = useRef(null);
+    const title = useRef(null);
+    const { isDark } = useContext(ThemeContext);
 
     return (
-        <div className="verity-main flex flex-col w-full align-middle">
-            <h1 className="text-5xl">Verity Encounter</h1>
-            <h2 ref={subHeader} className="text-3xl py-6">Dissection helper</h2>
+        <>
+            <main id="main" className={"text-foreground bg-background " + (isDark ? "dark" : "light")}>
+                <Header />
+                <div className="verity-main flex flex-col w-full min-h-screen align-middle">
+                    <h1 ref={title} className="text-5xl p-4 capitalize">Dissection helper</h1>
+                    <span className="text-lg px-8">
+                        Select all your shapes to dissect, check <Chip color="primary">i</Chip> for details
+                    </span>
 
-            <ShapeSelectorContainer reference={subHeader}/>
-            <InfoPanel />
-
-        </div>
+                    <ShapeSelectorContainer reference={title}/>
+                    <InfoPanel />
+                </div>
+            </main>
+        </>
     );
 }
 

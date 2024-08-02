@@ -1,11 +1,13 @@
-import React, { useEffect, useState, useRef } from "react"
+import React, { useEffect, useState, useRef, useContext } from "react"
 
 import ShapeSelector from "./ShapeSelector";
 import ResolutionSteps from "./ResolutionSteps";
 import checkHelper from "../scripts/helpers/checkHelper";
 import verity from "../scripts/verity";
+import { ThemeContext } from "./context/ThemeContext";
 
-import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
+
+import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Divider } from "@nextui-org/react";
 import confetti from 'canvas-confetti';
 
 const initialContainerState = {
@@ -29,12 +31,13 @@ const ShapeSelectorContainer = (props) => {
     const [shapeData, setShapeData] = useState(initialContainerState);
     const [resetShape, setReset] = useState(false);
     const { reference } = props;
+    const { isDark } = useContext(ThemeContext)
 
     // Might want to put the result inside a useMemo() to recall these operations only if necesary
     useEffect(() => {
 
         if (!isOpen && steps) {
-            const resetButton = document.querySelector('#resetButton');
+            const resetButton = document.querySelector('#modalResetButton');
         
             const handleClick = () => {
               setShapeData(initialContainerState);
@@ -117,7 +120,7 @@ const ShapeSelectorContainer = (props) => {
                 key={i}
                 index={i}
                 position={i.toString()} 
-                classes={`flex flex-col ${i === 2 ? 'md:col-span-2 lg:col-span-1' : ''}`}
+                classes={`flex flex-col p-4 lg-p-6 ${i === 2 ? 'md:col-span-2 lg:col-span-1' : ''}`}
                 onShapeChange={handleShapeChange}
                 resetShape={resetShape}
             />
@@ -126,31 +129,59 @@ const ShapeSelectorContainer = (props) => {
         return shapeSelectors;
     };
 
+    // Function to reset the shapes, duplicated code will uniform later
+    const handleReset = () => {
+        setShapeData(initialContainerState);
+        handleShapeChange(initialState);
+        setSteps(false);
+        setReset(!resetShape);
+        reference.current.scrollIntoView({ behavior: 'smooth' });
+    }
+
     return(
         <>
-            <div className="container my-4 lg:w-full 2xl:w-2/3 self-center">
-                <Button onPress={onOpen} 
-                    color="primary" 
-                    variant="shadow" 
-                    className="mb-4 hidden lg:inline-flex" 
-                    isDisabled={!shapeData.valid}>
-                    {!shapeData.valid ? 'Select all your shapes' : 'Start dissection'}
-                </Button>
+            <div className="container my-4 lg:w-full 2xl:w-2/3 self-center px-8 lg:px-16 2xl:px-0">
+                <div className="button-container hidden lg:inline-flex gap-4 mb-6">
+                    <Button onPress={handleReset} 
+                        color="danger" 
+                        variant="light" 
+                        className="w-48 font-bold">
+                        {'Reset shapes'}
+                    </Button>
+                    <Button onPress={onOpen} 
+                        color="primary" 
+                        variant="shadow" 
+                        className="w-48 font-bold"
+                        isDisabled={!shapeData.valid}>
+                        {'Start dissection'}
+                    </Button>
+
+                </div>
 
                 <div className={containerClasses}>
                     {renderShapeSelectors()}
                 </div>
 
-                <Button onPress={onOpen} 
-                    color="primary" 
-                    variant="shadow" 
-                    className="mt-4 lg:hidden"
-                    isDisabled={!shapeData.valid}>
-                    {!shapeData.valid ? 'Select all your shapes' : 'Start Dissection'}
-                </Button>
+                <div className="button-container inline-flex flex-col md:flex-row md:gap-6 mt-4 md:mt-8 lg:hidden">
+                    <Button onPress={handleReset} 
+                        color="danger" 
+                        variant="light" 
+                        className="w-48 mb-4">
+                        {'Reset shapes'}
+                    </Button>
+                    <Button onPress={onOpen} 
+                        color="primary" 
+                        variant="shadow" 
+                        className="w-48 mb-4"
+                        isDisabled={!shapeData.valid}>
+                        {'Start dissection'}
+                    </Button>
+                </div>
+
             </div>
 
             <Modal
+                className={'text-foreground ' + (isDark ? "dark" : "light")}
                 isOpen={isOpen}
                 placement="bottom-center"
                 backdrop="blur"
@@ -159,17 +190,19 @@ const ShapeSelectorContainer = (props) => {
                 <ModalContent>
                     {(onClose) => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1 items-center pb-2">
-                                Required steps
+                            <ModalHeader className="flex flex-col gap-1 items-start pb-2">
+                                <span className="text-2xl font-bold">Required steps</span>
                             </ModalHeader>
+                            <Divider />
                             <ModalBody>
                                 {shapeData.valid ? <ResolutionSteps steps={steps} /> : 'Why are you here?'}
                             </ModalBody>
+                            <Divider />
                             <ModalFooter>
-                                <Button id="feedbackButton" color="primary" variant="light" onPress={onClose}>
+                                {/* <Button id="feedbackButton" color="primary" variant="light" onPress={onClose}>
                                     Done? <br/> Send me a feedback!
-                                </Button>
-                                <Button id="resetButton" color="danger" variant="light" onPress={onClose}>
+                                </Button> */}
+                                <Button id="modalResetButton" className="font-bold" color="danger" variant="light" onPress={onClose}>
                                     Reset shapes
                                 </Button>
                             </ModalFooter>
