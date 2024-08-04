@@ -6,6 +6,7 @@ import InfoPanel from "./components/InfoPanel";
 import Header from "./components/Header";
 import { ThemeContext } from "./components/context/ThemeContext";
 import { Chip } from "@nextui-org/react";
+import Footer from "./components/Footer";
 
 function App() {
     const title = useRef(null);
@@ -22,8 +23,9 @@ function App() {
                     </span>
 
                     <ShapeSelectorContainer reference={title}/>
-                    <InfoPanel />
                 </div>
+                <InfoPanel />
+                <Footer />
             </main>
         </>
     );

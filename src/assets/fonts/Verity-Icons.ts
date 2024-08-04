@@ -3,6 +3,8 @@ export type VerityIconsId =
   | "circle"
   | "cone"
   | "cube"
+  | "github-mark-white"
+  | "github-mark"
   | "prism"
   | "pyramid"
   | "raid"
@@ -15,6 +17,8 @@ export type VerityIconsKey =
   | "Circle"
   | "Cone"
   | "Cube"
+  | "GithubMarkWhite"
+  | "GithubMark"
   | "Prism"
   | "Pyramid"
   | "Raid"
@@ -27,6 +31,8 @@ export enum VerityIcons {
   Circle = "circle",
   Cone = "cone",
   Cube = "cube",
+  GithubMarkWhite = "github-mark-white",
+  GithubMark = "github-mark",
   Prism = "prism",
   Pyramid = "pyramid",
   Raid = "raid",
@@ -40,10 +46,12 @@ export const VERITY_ICONS_CODEPOINTS: { [key in VerityIcons]: string } = {
   [VerityIcons.Circle]: "61698",
   [VerityIcons.Cone]: "61699",
   [VerityIcons.Cube]: "61700",
-  [VerityIcons.Prism]: "61701",
-  [VerityIcons.Pyramid]: "61702",
-  [VerityIcons.Raid]: "61703",
-  [VerityIcons.Sphere]: "61704",
-  [VerityIcons.Square]: "61705",
-  [VerityIcons.Triangle]: "61706",
+  [VerityIcons.GithubMarkWhite]: "61701",
+  [VerityIcons.GithubMark]: "61702",
+  [VerityIcons.Prism]: "61703",
+  [VerityIcons.Pyramid]: "61704",
+  [VerityIcons.Raid]: "61705",
+  [VerityIcons.Sphere]: "61706",
+  [VerityIcons.Square]: "61707",
+  [VerityIcons.Triangle]: "61708",
 };

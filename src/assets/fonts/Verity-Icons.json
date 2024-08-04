@@ -3,10 +3,12 @@
     "circle": 61698,
     "cone": 61699,
     "cube": 61700,
-    "prism": 61701,
-    "pyramid": 61702,
-    "raid": 61703,
-    "sphere": 61704,
-    "square": 61705,
-    "triangle": 61706
+    "github-mark-white": 61701,
+    "github-mark": 61702,
+    "prism": 61703,
+    "pyramid": 61704,
+    "raid": 61705,
+    "sphere": 61706,
+    "square": 61707,
+    "triangle": 61708
 }

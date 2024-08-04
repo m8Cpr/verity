@@ -1,22 +1,24 @@
 import { Button, Link, Navbar, NavbarBrand, NavbarContent, NavbarItem, Switch } from "@nextui-org/react";
-import React, { useContext, useEffect } from "react";
-import { LightIcon } from "./Header/LightIcon";
-import { DarkIcon } from "./Header/DarkIcon";
+import React, { useContext, useEffect, useState } from "react";
+import { LightIcon } from "./IconComponents/LightIcon";
+import { DarkIcon } from "./IconComponents/DarkIcon";
 import { ThemeContext } from "./context/ThemeContext";
 
 const Header = () => {
 
     const {isDark, setDark} = useContext(ThemeContext);
+    const [isLoaded, isLoading] = useState(false);
 
     const toggleTheme = () => {
         setDark(!isDark);
     }
 
     useEffect(() => {
-        var scrollBarTrackColor = "#FFFFFF";
         const body = document.querySelector('body')
-        if(isDark) {
-            scrollBarTrackColor = "#222831"
+        if(isDark && !isLoaded) {
+            body.classList.add("dark");
+            isLoading(true);
+            return;
         }
         body.classList.toggle("dark")
     }, [isDark])

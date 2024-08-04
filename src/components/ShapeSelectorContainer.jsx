@@ -163,18 +163,18 @@ const ShapeSelectorContainer = (props) => {
                 </div>
 
                 <div className="button-container inline-flex flex-col md:flex-row md:gap-6 mt-4 md:mt-8 lg:hidden">
-                    <Button onPress={handleReset} 
-                        color="danger" 
-                        variant="light" 
-                        className="w-48 mb-4">
-                        {'Reset shapes'}
-                    </Button>
                     <Button onPress={onOpen} 
                         color="primary" 
                         variant="shadow" 
                         className="w-48 mb-4"
                         isDisabled={!shapeData.valid}>
                         {'Start dissection'}
+                    </Button>
+                    <Button onPress={handleReset} 
+                        color="danger" 
+                        variant="light" 
+                        className="w-48 mb-4">
+                        {'Reset shapes'}
                     </Button>
                 </div>
 

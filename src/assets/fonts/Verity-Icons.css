@@ -1,7 +1,7 @@
 @font-face {
   font-display: block;
   font-family: "Verity-Icons";
-  src: url("./Verity-Icons.woff2?5c97d452d81f388baa67532d11163c60") format("woff2");
+  src: url("./Verity-Icons.woff2?aa33d8221af02685c3acd6b891cb32a6") format("woff2");
 }
 
 i[class^="icon-"]::before, i[class*=" icon-"]::before {
@@ -27,21 +27,27 @@ i[class^="icon-"]::before, i[class*=" icon-"]::before {
 .icon-cube::before {
   content: "\f104";
 }
-.icon-prism::before {
+.icon-github-mark-white::before {
   content: "\f105";
 }
-.icon-pyramid::before {
+.icon-github-mark::before {
   content: "\f106";
 }
-.icon-raid::before {
+.icon-prism::before {
   content: "\f107";
 }
-.icon-sphere::before {
+.icon-pyramid::before {
   content: "\f108";
 }
-.icon-square::before {
+.icon-raid::before {
   content: "\f109";
 }
-.icon-triangle::before {
+.icon-sphere::before {
   content: "\f10a";
+}
+.icon-square::before {
+  content: "\f10b";
+}
+.icon-triangle::before {
+  content: "\f10c";
 }
