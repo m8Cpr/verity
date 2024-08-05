@@ -3,12 +3,15 @@
   "private": true,
   "version": "1.0.1",
   "type": "module",
+  "homepage": "https://M8Cpr.github.io/verity",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "compile:icons": "fantasticon src/assets/icons -o src/assets/fonts/ -n Verity-Icons -h 200 --normalize 1 -t woff2"
+    "compile:icons": "fantasticon src/assets/icons -o src/assets/fonts/ -n Verity-Icons -h 200 --normalize 1 -t woff2",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
