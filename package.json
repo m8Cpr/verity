@@ -11,7 +11,7 @@
     "preview": "vite preview",
     "compile:icons": "fantasticon src/assets/icons -o src/assets/fonts/ -n Verity-Icons -h 200 --normalize 1 -t woff2",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.6",
