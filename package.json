@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.1",
   "type": "module",
-  "homepage": "https://M8Cpr.github.io/verity",
+  "homepage": "https://m8cpr.github.io/verity",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
