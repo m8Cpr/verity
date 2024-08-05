@@ -46,7 +46,7 @@ const Header = () => {
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <NavbarItem isActive >
-                    <Link className="capitalize hover:text-primary transition-colors" color="foreground" href="#">
+                    <Link className="capitalize text-primary hover:text-primary transition-colors" color="foreground" href="#">
                         Verity encounter
                     </Link>
                 </NavbarItem>

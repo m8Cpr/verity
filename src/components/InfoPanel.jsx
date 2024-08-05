@@ -19,7 +19,7 @@ const InfoPanel = () => {
                     <span className="text-small pb-1">Select 3 inside shapes and 3 outside shapes. They must meet the following requirements:</span>
                     <ul className="pl-4 list-disc">
                         <li className="text-small">
-                            <span>Each inside shapes must be unique,</span>
+                            <span>Each internal shape must be unique,</span>
                         </li>
                         <li className="text-small">
                             <span>For each external shape there are two corresponding two-dimensional shapes. There can be at most 2 two-dimensional shapes per type.</span>

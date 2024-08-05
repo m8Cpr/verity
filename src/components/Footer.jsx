@@ -6,8 +6,8 @@ import { GithubIcon } from "./IconComponents/GithubIcon";
 const Footer = () => {
     return (
         <>
-            <div className="flex flex-col gap-4 py-8">
-                <span>{"Created by" + " "}
+            <div className="flex flex-col w-full gap-4 py-8">
+                <span className="pl-4">{"Created by" + " "}
                     <Link className="font-bold"
                         isExternal
                         showAnchorIcon
