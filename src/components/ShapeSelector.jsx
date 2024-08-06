@@ -2,11 +2,12 @@ import React, { useEffect, useState } from 'react';
 import dictionary from "../constants/shapeDictionary";
 import "../assets/fonts/Verity-Icons.css";
 import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
+import checkHelper from '../scripts/helpers/checkHelper';
 
 const ShapeSelector = (props) => {
 
     // Props
-    const { index, onShapeChange, resetShape } = props;
+    const { index, onShapeChange, resetShape, buttons } = props;
 
     const initialState = {
         position: index,
@@ -35,11 +36,13 @@ const ShapeSelector = (props) => {
         const button = event.target.closest('button');
         if (!button) return;
 
-        const shape = button.getAttribute('data-shape');
+        var shape = button.getAttribute('data-shape');
         const side = button.getAttribute('data-side');
-        side === INSIDE ? 'innerShape' : 'outerShape';
 
         setShapeData((prevData) => {
+            if ({...prevData}[shapeSides[side]] === shape) {
+                shape = initialState[shapeSides[side]];
+            }
             const newShapeData = {
               ...prevData,
               [shapeSides[side]]: shape,
@@ -79,7 +82,8 @@ const ShapeSelector = (props) => {
                                 onPress={selectShape}
                                 data-side={INSIDE}
                                 variant="flat"
-                                data-shape={shape}>
+                                data-shape={shape}
+                                isDisabled={buttons && buttons.innerShapes?.includes(shape) && shapeData.innerShape !== shape}>
                                 <i className={'icon icon-' + dictionary.inside[shape].name}></i>
                             </Button>
                         </li>
@@ -96,7 +100,9 @@ const ShapeSelector = (props) => {
                                 onPress={selectShape}
                                 data-side={OUTSIDE}
                                 data-shape={shape}
-                                variant="flat">
+                                variant="flat"
+                                isDisabled={buttons && checkHelper.disableButtons(shape, buttons.countOuterShapes) && shapeData.outerShape !== shape}
+                                >
                                 <i className={'icon icon-' + dictionary.outside[shape].threeDimensionalShape}></i>
                             </Button>
                         </li>
