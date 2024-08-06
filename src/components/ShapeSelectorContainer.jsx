@@ -19,7 +19,8 @@ const initialContainerState = {
 const initialState = {
     innerShapes: ['', '', ''],
     outerShapes: ['', '', ''],
-    valid: false
+    valid: false,
+    buttons: {innerShapes: [], countOuterShapes: {S: 2, C: 2,T: 2}}
 };
 
 const ShapeSelectorContainer = (props) => {
@@ -95,12 +96,14 @@ const ShapeSelectorContainer = (props) => {
             newOuterShapes[position] = outerShape;
 
             const validityCheck = checkHelper.validityCheck(newInnerShapes, newOuterShapes);
+            const buttons = checkHelper.checkButtons(newInnerShapes, newOuterShapes);
 
             return {
                 ...prevData,
                 innerShapes: newInnerShapes,
                 outerShapes: newOuterShapes,
-                valid: validityCheck
+                valid: validityCheck,
+                buttons: buttons
             };
         });
         
@@ -123,6 +126,7 @@ const ShapeSelectorContainer = (props) => {
                 classes={`flex flex-col p-4 lg-p-6 ${i === 2 ? 'md:col-span-2 lg:col-span-1' : ''}`}
                 onShapeChange={handleShapeChange}
                 resetShape={resetShape}
+                buttons={shapeData.buttons}
             />
           );
         }

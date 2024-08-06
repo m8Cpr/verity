@@ -66,11 +66,72 @@ function validityCheck(innerShapes, outerShapes) {
   return true;
 }
 
+function checkButtons(innerShapes, outerShapes) {
+
+  let countOuterShapes = {
+    S: 2,
+    C: 2,
+    T: 2
+  };
+
+  outerShapes = outerShapes.map((shape) => {
+    if (!shape) return '';
+    return dictionary.outside[shape].twoDimensionalShapes;
+  })
+
+  for (let shape in outerShapes) {
+    for (let index in outerShapes[shape]) {
+      if (countOuterShapes[outerShapes[shape][index]] > 0) {
+        countOuterShapes[outerShapes[shape][index]]--;
+      }
+    }
+  }
+
+  var res = {
+    innerShapes: innerShapes,
+    countOuterShapes: countOuterShapes
+  }
+
+  return res;
+}
+
+function disableButtons(shape, countOuterShapes) {
+
+  if (!shape) return true;
+  shape = shapeToDictionary(shape);
+
+  for (let key in shape) {
+    if (shape[key] > (countOuterShapes[key] || 0)) {
+      return true;
+    }
+  }
+  
+  return false;
+}
+
+function shapeToDictionary(shape) {
+  shape = dictionary.outside[shape].twoDimensionalShapes;
+  var shapeDictionary = {}
+
+  shape.forEach(element => {
+    if (!shapeDictionary[element]) {
+      shapeDictionary[element] = 1;
+    }
+    else {
+      shapeDictionary[element]++;
+    }
+  });
+
+  return shapeDictionary;
+}
+
 const checkHelper = {
   check: check,
   finalCheck: finalCheck,
   isFinalShape: isFinalShape,
-  validityCheck: validityCheck
+  validityCheck: validityCheck,
+  checkButtons: checkButtons,
+  disableButtons: disableButtons
 }
 
 export default checkHelper;
