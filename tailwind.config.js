@@ -8,6 +8,9 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
+  future: {
+    hoverOnlyWhenSupported: true,
+  },
   theme: {
     colors: {
       primary: "rgb(var(--color-primary) / <alpha-value>)",
